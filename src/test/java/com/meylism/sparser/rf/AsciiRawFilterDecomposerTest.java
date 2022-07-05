@@ -8,23 +8,21 @@ import java.util.ArrayList;
 public class AsciiRawFilterDecomposerTest {
   @Test
   public void testTheNumberOfRawFilters() {
-    ArrayList<String> predicates = new ArrayList<>();
-    predicates.add("meylis");
-    predicates.add("matiyev");
+    ArrayList<String> strs = new ArrayList<>();
+    strs.add("meylis");
+    strs.add("matiyev");
 
-    ArrayList<AsciiRawFilter> asciiRawFilters = AsciiRawFilterDecomposer.decompose(predicates);
+    AsciiRawFilter arfs = AsciiRawFilterDecomposer.decompose(strs);
 
-    Assert.assertEquals(asciiRawFilters.size(), 9);
+    Assert.assertEquals(arfs.getRawFilters().size(), 9);
   }
 
   @Test
   public void testTheZeroNumberOfRawFilters() {
     ArrayList<String> predicates = new ArrayList<>();
 
-    ArrayList<AsciiRawFilter> asciiRawFilters = AsciiRawFilterDecomposer.decompose(predicates);
+    AsciiRawFilter arfs = AsciiRawFilterDecomposer.decompose(predicates);
 
-    Assert.assertEquals(asciiRawFilters.size(), 0);
-
-
+    Assert.assertEquals(arfs.getRawFilters().size(), 0);
   }
 }

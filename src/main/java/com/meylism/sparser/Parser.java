@@ -1,5 +1,5 @@
 package com.meylism.sparser;
 
 public interface Parser {
-  Object deserialize(String record);
+  Object deserialize(String record) throws Exception;
 }

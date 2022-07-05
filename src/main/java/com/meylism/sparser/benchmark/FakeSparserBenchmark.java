@@ -2,6 +2,7 @@ package com.meylism.sparser.benchmark;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meylism.sparser.Sparser;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
@@ -22,27 +23,20 @@ import java.util.concurrent.TimeUnit;
 public class FakeSparserBenchmark {
   private ArrayList<String> lines;
   private ArrayList<String> predicates;
+  private Sparser sparser;
   private ObjectMapper mapper;
 
   @Benchmark
-  public void benchFakeSparser(Blackhole bh) throws JsonProcessingException {
-    int match = 0;
-    for(String line : lines) {
-      for(String predicate : predicates) {
-        if (line.indexOf(predicate) > -1 )
-          match++;
+  public void benchFakeSparser(Blackhole bh) throws Exception {
+    sparser.calibrate(lines.subList(0, 20));
+
+    for (String record : lines) {
+      if (sparser.filter(record)){
+        bh.consume(mapper.readTree(record));
+//        System.out.println(record);
       }
 
-      if(match == predicates.size()){
-        bh.consume(mapper.readTree(line));
-        System.out.println(line);
-      }
-
-
-      match = 0;
     }
-
-
   }
 
   @Benchmark
@@ -57,10 +51,11 @@ public class FakeSparserBenchmark {
     lines = Utils.loadJson("twitter.json");
 
     predicates = new ArrayList<>();
-    predicates.add("meyl");
-    predicates.add("ylis");
+    predicates.add("text");
+    predicates.add("source");
 
     mapper = new ObjectMapper();
+    sparser = new Sparser(predicates);
   }
 
   public static void main(String[] args) throws RunnerException {
