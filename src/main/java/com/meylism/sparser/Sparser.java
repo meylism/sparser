@@ -1,7 +1,7 @@
 package com.meylism.sparser;
 
 import com.meylism.sparser.calibration.Calibration;
-import com.meylism.sparser.parser.Jackson;
+import com.meylism.sparser.parser.JacksonParser;
 import com.meylism.sparser.rf.AsciiRawFilter;
 import com.meylism.sparser.rf.AsciiRawFilterDecomposer;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class Sparser {
   }
 
   public void calibrate(List<String> records) throws Exception {
-    query = new Calibration().calibrate(records, asciiRawFilter, new Jackson());
+    query = new Calibration().calibrate(records, asciiRawFilter, new JacksonParser());
   }
 
   public boolean filter(String record) {

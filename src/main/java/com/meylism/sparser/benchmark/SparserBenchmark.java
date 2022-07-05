@@ -20,22 +20,21 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode({Mode.AverageTime})
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class FakeSparserBenchmark {
+public class SparserBenchmark {
   private ArrayList<String> lines;
   private ArrayList<String> predicates;
   private Sparser sparser;
   private ObjectMapper mapper;
 
   @Benchmark
-  public void benchFakeSparser(Blackhole bh) throws Exception {
-    sparser.calibrate(lines.subList(0, 20));
+  public void benchSparser(Blackhole bh) throws Exception {
+    sparser.calibrate(lines.subList(0, 80));
 
     for (String record : lines) {
       if (sparser.filter(record)){
         bh.consume(mapper.readTree(record));
 //        System.out.println(record);
       }
-
     }
   }
 
@@ -48,11 +47,13 @@ public class FakeSparserBenchmark {
 
   @Setup
   public void setup() throws IOException {
-    lines = Utils.loadJson("twitter.json");
+    lines = Utils.loadJson("twitter2.json");
 
     predicates = new ArrayList<>();
-    predicates.add("text");
-    predicates.add("source");
+    predicates.add("elon");
+    predicates.add("musk");
+    predicates.add("putin");
+    predicates.add("biden");
 
     mapper = new ObjectMapper();
     sparser = new Sparser(predicates);
@@ -60,7 +61,7 @@ public class FakeSparserBenchmark {
 
   public static void main(String[] args) throws RunnerException {
     Options opt = new OptionsBuilder()
-        .include(FakeSparserBenchmark.class.getSimpleName())
+        .include(SparserBenchmark.class.getSimpleName())
         .build();
     new Runner(opt).run();
   }

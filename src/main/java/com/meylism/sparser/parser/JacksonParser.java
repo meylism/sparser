@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meylism.sparser.Parser;
 
-public class Jackson implements Parser {
+public class JacksonParser implements Parser {
   private ObjectMapper objectMapper;
 
-  public Jackson() {
+  public JacksonParser() {
     objectMapper = new ObjectMapper();
   }
 
