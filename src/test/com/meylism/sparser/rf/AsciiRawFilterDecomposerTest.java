@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-
 public class AsciiRawFilterDecomposerTest {
   @Test
   public void testTheNumberOfRawFilters() {
