@@ -1,12 +1,12 @@
 package com.meylism.sparser;
 
+import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.deserializer.JacksonDeserializer;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Sparser is a raw filtering solution for filtering records before parsing.
@@ -41,5 +41,14 @@ public class Sparser {
 
   public void calibrate(ArrayList<String> samples) throws Exception {
     this.calibrate(samples, new JacksonDeserializer());
+  }
+
+  public Boolean filter(String record) {
+//    int passed = 0;
+    for(RawFilter rawFilter : this.calibration.getBestCascade()) {
+      if (rawFilter.evaluate(record))
+        return true;
+    }
+    return false;
   }
 }

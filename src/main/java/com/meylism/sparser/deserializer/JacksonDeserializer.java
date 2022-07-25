@@ -2,7 +2,6 @@ package com.meylism.sparser.deserializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.meylism.sparser.Deserializer;
 
 public class JacksonDeserializer implements Deserializer {
   private ObjectMapper objectMapper;

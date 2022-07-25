@@ -15,10 +15,10 @@ public class ExactStringMatchPredicate extends SimplePredicate {
   public void compileRawFilters() {
     ArrayList<RawFilter> filters = new ArrayList<>();
     // add non-tokenized version as well
-    filters.add(new SubstringSearchRF(this.key));
-    for (String token : Tokenizer.tokenize(this.key)) {
-      filters.add(new SubstringSearchRF(token));
-    }
+//    filters.add(new SubstringSearchRF(this.key));
+//    for (String token : Tokenizer.tokenize(this.key)) {
+//      filters.add(new SubstringSearchRF(token));
+//    }
 
     filters.add(new SubstringSearchRF(this.value.getValue()));
     for (String token : Tokenizer.tokenize(this.value.getValue())) {

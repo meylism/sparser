@@ -1,4 +1,4 @@
-package com.meylism.sparser;
+package com.meylism.sparser.deserializer;
 
 public interface Deserializer {
   /**

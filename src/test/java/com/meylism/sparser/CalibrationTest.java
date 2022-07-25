@@ -27,20 +27,22 @@ public class CalibrationTest {
   public void setUp() throws IOException {
     ConjunctiveClause clause1 = new ConjunctiveClause();
     ConjunctiveClause clause2 = new ConjunctiveClause();
+    ConjunctiveClause clause3 = new ConjunctiveClause();
 
-    ExactStringMatchPredicate esmp1 = new ExactStringMatchPredicate("city", new PredicateValue("Ashgabat"));
-    ExactStringMatchPredicate esmp2 = new ExactStringMatchPredicate("country", new PredicateValue("Budapest"));
-    ExactStringMatchPredicate esmp3 = new ExactStringMatchPredicate("name", new PredicateValue("Elon"));
+    ExactStringMatchPredicate esmp1 = new ExactStringMatchPredicate("text", new PredicateValue("Ronaldo"));
+    ExactStringMatchPredicate esmp2 = new ExactStringMatchPredicate("president", new PredicateValue("Biden"));
+    ExactStringMatchPredicate esmp3 = new ExactStringMatchPredicate("lang", new PredicateValue("en"));
 
 
 
     clause1.add(esmp1);
     clause2.add(esmp2);
-    clause2.add(esmp3);
+    clause3.add(esmp3);
 
     ArrayList<ConjunctiveClause> clauses = new ArrayList<>();
     clauses.add(clause1);
     clauses.add(clause2);
+    clauses.add(clause3);
 
     sparser.compile(clauses);
 

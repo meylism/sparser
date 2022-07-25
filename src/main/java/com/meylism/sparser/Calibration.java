@@ -1,21 +1,24 @@
 package com.meylism.sparser;
 
+import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 public class Calibration {
   private static Logger logger = LogManager.getLogger(Calibration.class);
   /**
-   * The maximum cascade depth.
+   * The maximum number of RFs to consider.
    */
-  private static final Integer MAX_SCHEDULE_SIZE = 32;
-  private static final Integer MIN_SCHEDULE_SIZE = 4;
+  private static final Integer MAX_RF = 32;
+  private static final Integer MIN_RF = 4;
 
   /**
    * The maximum number of records to sample.
@@ -25,20 +28,20 @@ public class Calibration {
    * The maximum number of records to parse.
    */
   private static final Integer PARSER_MEASUREMENT_SAMPLES = 10;
-
   private Deserializer deserializer;
   private ArrayList<ConjunctiveClause> clauses;
 
   // cascade
-  public ArrayList<RawFilter> bestCascade = new ArrayList<>();
-  public ArrayList<Integer> bestCascadeSources = new ArrayList<>();
-  private double bestCost;
+  @Getter
+  public List<RawFilter> bestCascade;
+  private ArrayList<RawFilter> tempCascade = new ArrayList<>();
+  private ArrayList<Integer> tempCascadeIndices = new ArrayList<>();
+  private double bestCost = Double.MAX_VALUE;
 
   // sources
   private ArrayList<Integer> sourceClauses = new ArrayList<>();
   private ArrayList<Integer> sourcePredicates = new ArrayList<>();
   private ArrayList<RawFilter> rawFilters = new ArrayList<>();
-
 
   // time
   private long avgParserRuntime = 0;
@@ -47,12 +50,6 @@ public class Calibration {
   // calibration stats
   int samplesProcessed = 0;
   long parsedRecords = 0;
-
-//  private int numSampled = 0;
-//  private double parseCost = 0;
-//  private double bestCost = Double.MAX_VALUE;
-//  private int[] bestCascade;
-//  private int bestCascadeLen;
 
   /**
    *
@@ -73,11 +70,12 @@ public class Calibration {
    */
   public void calibrate(ArrayList<String> samples) throws Exception {
     final int NUM_OF_RECORDS = Math.min(MAX_RECORDS, samples.size());
-    if (totalNumberOfRFs > MAX_SCHEDULE_SIZE) {
+
+    if (totalNumberOfRFs > MAX_RF) {
+      // if the number of RFs is greater than MAX_RF, select MAX_RF RFs randomly in a round-robin fashion
       // todo: select 32 by picking a random RF generated from each token in a round-robin fashion
-    } else {
-      // todo: otherwise: max(clauses, 4)
     }
+
     final int CASCADE_DEPTH = this.clauses.size();
 
     final int NUM_OF_RECORDS_TO_PARSE = Math.min(NUM_OF_RECORDS, PARSER_MEASUREMENT_SAMPLES);
@@ -121,36 +119,43 @@ public class Calibration {
 
     populateRFsTogether();
     for (int i=0; i<CASCADE_DEPTH; i++) {
-      bestCascade.add(null);
-      bestCascadeSources.add(null);
+      tempCascade.add(null);
+      tempCascadeIndices.add(null);
     }
-    for (int depth=1; depth<=CASCADE_DEPTH; depth++) {
-      bestCost = Double.MAX_VALUE;
-      chooseTheBestCascade(depth, 0, depth);
-    }
+
+    chooseTheBestCascade(CASCADE_DEPTH, 0, CASCADE_DEPTH);
+
+    assert bestCascade.size() == CASCADE_DEPTH;
   }
 
+  /**
+   * Recursively generate combinations of RFs and choose the best one.
+   *
+   * @param currentCascadeDepth current depth of the cascade in the recursive procedure
+   * @param start
+   * @param cascadeDepth depth of the resulting cascade
+   */
   private void chooseTheBestCascade(int currentCascadeDepth, int start, int cascadeDepth) {
     // base case
     if (currentCascadeDepth == 0) {
-      for (int i=0; i<cascadeDepth; i++)
-        System.out.print(bestCascade.get(i));
-      System.out.println();
-
+      // skip cascades if two RFs belong to the same conjunctive clause
+      // in other words only consider a single RF from each conjunctive clause
       for (int i=0; i<cascadeDepth; i++) {
         for (int j=0; j<cascadeDepth; j++) {
-          if (i != j && bestCascadeSources.get(i) == bestCascadeSources.get(j))
+          if (i != j && sourceClauses.get(tempCascadeIndices.get(i)) == sourceClauses.get(tempCascadeIndices.get(j))) {
+            logger.debug("Skipping the schedule {}", tempCascade.subList(0, cascadeDepth));
             return;
+          }
         }
       }
 
-      RawFilter firstrRF = bestCascade.get(0);
-      BitSet joint = firstrRF.getPassthroughMask();
+      RawFilter firstRF = tempCascade.get(0);
+      BitSet joint = firstRF.getPassthroughMask();
       // first RF runs unconditionally
-      double totalCost = firstrRF.getAvgRuntimeCost();
+      double totalCost = firstRF.getAvgRuntimeCost();
 
       for (int i=1; i<cascadeDepth; i++) {
-        RawFilter rf = bestCascade.get(i);
+        RawFilter rf = tempCascade.get(i);
         long rfCost = rf.getAvgRuntimeCost();
         int jointRate = joint.cardinality();
         double rate = (double)jointRate / (double)samplesProcessed;
@@ -159,22 +164,25 @@ public class Calibration {
       }
 
       int jointRate = joint.cardinality();
-      double rate = (double) jointRate / (double) samplesProcessed;
+      double rate = (double)jointRate / (double)samplesProcessed;
       totalCost += rate * avgParserRuntime;
 
+      logger.debug("Considering the schedule {}, cost {}", tempCascade.subList(0, cascadeDepth), totalCost);
+
       if (totalCost < bestCost) {
+        logger.debug("The best schedule for now {}", tempCascade.subList(0, cascadeDepth));
         bestCost = totalCost;
+        bestCascade = tempCascade.subList(0, cascadeDepth);
       }
 
       return;
     }
 
-    for (int i = start; i< rawFilters.size()-currentCascadeDepth; i++) {
-          bestCascade.set(cascadeDepth-currentCascadeDepth, rawFilters.get(i));
-          bestCascadeSources.set(cascadeDepth-currentCascadeDepth, sourceClauses.get(i));
+    for (int i = start; i<=rawFilters.size()-currentCascadeDepth; i++) {
+          tempCascade.set(cascadeDepth-currentCascadeDepth, rawFilters.get(i));
+          tempCascadeIndices.set(cascadeDepth-currentCascadeDepth, i);
           chooseTheBestCascade(currentCascadeDepth-1, i+1, cascadeDepth);
     }
-
   }
 
   private void populateRFsTogether() {
@@ -196,13 +204,12 @@ public class Calibration {
   }
 
   /**
-   * Get the total number of RFs available in the whole query predicate.
-   * @return
+   * Calculate the total number of RFs available in the whole query predicate.
    */
   private void calculateTotalNumberOfRFs() {
     int sum = 0;
     for (ConjunctiveClause clause : clauses)
       sum += clause.getTotalNumberOfRFs();
-    this.totalNumberOfRFs =  sum;
+    this.totalNumberOfRFs = sum;
   }
 }
