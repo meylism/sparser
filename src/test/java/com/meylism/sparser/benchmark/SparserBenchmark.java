@@ -3,8 +3,10 @@ package com.meylism.sparser.benchmark;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meylism.sparser.Sparser;
+import com.meylism.sparser.Sparser.SparserBuilder;
+import com.meylism.sparser.Utils;
 import com.meylism.sparser.predicate.ConjunctiveClause;
-import com.meylism.sparser.predicate.ExactStringMatchPredicate;
+import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
@@ -13,9 +15,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Warmup(iterations = 3, time = 3)
@@ -26,15 +26,19 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 public class SparserBenchmark {
   private ArrayList<String> lines;
-  private ArrayList<String> predicates;
-  private Sparser sparser = new Sparser();
+  private Sparser sparser = new SparserBuilder().build();
   private ObjectMapper mapper = new ObjectMapper();
   public ArrayList<ConjunctiveClause> clauses = new ArrayList<>();
 
   @Benchmark
-  public void benchSparser(Blackhole bh) throws Exception {
+  public void benchSparserCalibration(Blackhole bh) throws Exception {
     sparser.compile(clauses);
     sparser.calibrate(lines);
+    bh.consume(sparser);
+  }
+
+  @Benchmark
+  public void benchSparser(Blackhole bh) throws Exception {
     for (String record : lines) {
       if (sparser.filter(record)){
         bh.consume(mapper.readTree(record));
@@ -52,19 +56,23 @@ public class SparserBenchmark {
 
   @Setup
   public void setup() throws Exception {
-    lines = Utils.loadJson("twitter2.json");
+    lines = Utils.loadJson("benchmark/twitter2.json");
+    System.out.println(lines.size());
 
     ConjunctiveClause clause1 = new ConjunctiveClause();
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
-    ExactStringMatchPredicate esmp1 = new ExactStringMatchPredicate("text", new PredicateValue("Elon"));
-    ExactStringMatchPredicate esmp3 = new ExactStringMatchPredicate("lang", new PredicateValue("en"));
+    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Elon"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("Putin"));
 
     clause1.add(esmp1);
     clause3.add(esmp3);
 
     clauses.add(clause1);
-//    clauses.add(clause3);
+    clauses.add(clause3);
+
+    sparser.compile(clauses);
+    sparser.calibrate(lines);
   }
 
   public static void main(String[] args) throws RunnerException {

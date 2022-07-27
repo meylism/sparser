@@ -1,11 +1,12 @@
 package com.meylism.sparser.predicate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Tokenizer {
   final static Integer SUBSTRING_SIZE = 4;
 
-  static ArrayList<String> tokenize(String token) {
+  static List<String> tokenize(String token) {
     ArrayList<String> substrings = new ArrayList<>();
 
     for(int j=0; j<=token.length()-SUBSTRING_SIZE; j++) {

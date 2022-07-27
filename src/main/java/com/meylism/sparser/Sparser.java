@@ -7,6 +7,7 @@ import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Sparser is a raw filtering solution for filtering records before parsing.
@@ -14,8 +15,14 @@ import java.util.ArrayList;
  * @author Meylis Matiyev
  */
 public class Sparser {
-  private ArrayList<ConjunctiveClause> clauses;
+  private List<ConjunctiveClause> clauses;
   private Calibration calibration;
+
+  private Context context;
+
+  private Sparser(Context context) {
+    this.context = context;
+  }
 
   /**
    * Compile possible filtering primitives, called raw filters(RFs), from the given query predicate.
@@ -24,7 +31,7 @@ public class Sparser {
    *
    * @param clauses query predicate in DNF, that is, a list of conjunctive clauses
    */
-  public void compile(final ArrayList<ConjunctiveClause> clauses) {
+  public void compile(final List<ConjunctiveClause> clauses) {
     this.clauses = clauses;
 
     for (ConjunctiveClause clause : clauses) {
@@ -34,12 +41,12 @@ public class Sparser {
     }
   }
 
-  public void calibrate(ArrayList<String> samples, Deserializer deserializer) throws Exception {
+  public void calibrate(List<String> samples, Deserializer deserializer) throws Exception {
     this.calibration = new Calibration(clauses, deserializer);
     this.calibration.calibrate(samples);
   }
 
-  public void calibrate(ArrayList<String> samples) throws Exception {
+  public void calibrate(List<String> samples) throws Exception {
     this.calibrate(samples, new JacksonDeserializer());
   }
 
@@ -50,5 +57,23 @@ public class Sparser {
         return true;
     }
     return false;
+  }
+
+  public static class SparserBuilder {
+    private Context context = new Context();
+
+    // defaults
+    public SparserBuilder() {
+      this.context.setFileFormat(FileFormat.JSON);
+    }
+
+    public SparserBuilder fileFormat(FileFormat fileFormat) {
+      this.context.setFileFormat(fileFormat);
+      return this;
+    }
+
+    public Sparser build() {
+      return new Sparser(this.context);
+    }
   }
 }

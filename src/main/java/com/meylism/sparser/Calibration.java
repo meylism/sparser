@@ -29,7 +29,7 @@ public class Calibration {
    */
   private static final Integer PARSER_MEASUREMENT_SAMPLES = 10;
   private Deserializer deserializer;
-  private ArrayList<ConjunctiveClause> clauses;
+  private List<ConjunctiveClause> clauses;
 
   // cascade
   @Getter
@@ -56,7 +56,7 @@ public class Calibration {
    * @param clauses a list of conjunctive clauses
    * @param deserializer - deserializer that implements Deserializer. Defaults to Jackson
    */
-  public Calibration(final ArrayList<ConjunctiveClause> clauses, final Deserializer deserializer) {
+  public Calibration(final List<ConjunctiveClause> clauses, final Deserializer deserializer) {
     this.clauses = clauses;
     this.deserializer = deserializer;
     this.calculateTotalNumberOfRFs();
@@ -68,7 +68,7 @@ public class Calibration {
    *
    * @param samples
    */
-  public void calibrate(ArrayList<String> samples) throws Exception {
+  public void calibrate(List<String> samples) throws Exception {
     final int NUM_OF_RECORDS = Math.min(MAX_RECORDS, samples.size());
 
     if (totalNumberOfRFs > MAX_RF) {
@@ -92,10 +92,10 @@ public class Calibration {
             long rfStart = TimeUtils.timeStart();
             boolean result = rawFilter.evaluate(sample);
             long timeElapsed = TimeUtils.timeStop(rfStart);
-            rawFilter.addToExecutionTime(timeElapsed);
+            rawFilter.setAvgRuntime(rawFilter.getAvgRuntime()+timeElapsed);
 
             if (result)
-              rawFilter.maskSetBit(samplesProcessed);
+              rawFilter.setPassthroughMaskBit(samplesProcessed);
 
             if (parsedRecords <= NUM_OF_RECORDS_TO_PARSE) {
               long parseStart = TimeUtils.timeStart();
@@ -111,7 +111,7 @@ public class Calibration {
               break;
 
           }
-          rawFilter.calculateAvgExecutionTime(samplesProcessed);
+          rawFilter.setAvgRuntime(rawFilter.getAvgRuntime()/samplesProcessed);
         }
       }
     }
@@ -152,11 +152,11 @@ public class Calibration {
       RawFilter firstRF = tempCascade.get(0);
       BitSet joint = firstRF.getPassthroughMask();
       // first RF runs unconditionally
-      double totalCost = firstRF.getAvgRuntimeCost();
+      double totalCost = firstRF.getAvgRuntime();
 
       for (int i=1; i<cascadeDepth; i++) {
         RawFilter rf = tempCascade.get(i);
-        long rfCost = rf.getAvgRuntimeCost();
+        long rfCost = rf.getAvgRuntime();
         int jointRate = joint.cardinality();
         double rate = (double)jointRate / (double)samplesProcessed;
         totalCost += rfCost * rate;

@@ -7,25 +7,17 @@ import java.util.BitSet;
 
 public abstract class RawFilter {
   @Getter @Setter
-  private long avgRuntimeCost;
-  @Getter @Setter
+  private long avgRuntime;
+  @Getter
   private BitSet passthroughMask;
 
-  public abstract Boolean evaluate(final String record);
+  public abstract Boolean evaluate(final Object record);
 
   public void initPassthroughMask(int size) {
     this.passthroughMask = new BitSet(size);
   }
 
-  public void maskSetBit(int bitIndex) {
-    passthroughMask.set(bitIndex);
-  }
-
-  public void addToExecutionTime(long time) {
-    this.avgRuntimeCost += time;
-  }
-
-  public void calculateAvgExecutionTime(int numberOfSamplesProcessed) {
-    this.avgRuntimeCost = this.avgRuntimeCost / numberOfSamplesProcessed;
+  public void setPassthroughMaskBit(int bitIndex) {
+    this.passthroughMask.set(bitIndex);
   }
 }

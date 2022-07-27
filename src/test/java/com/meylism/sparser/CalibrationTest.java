@@ -1,8 +1,7 @@
 package com.meylism.sparser;
 
-import com.meylism.sparser.benchmark.Utils;
 import com.meylism.sparser.predicate.ConjunctiveClause;
-import com.meylism.sparser.predicate.ExactStringMatchPredicate;
+import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class CalibrationTest {
   private ArrayList<String> records;
-  private Sparser sparser = new Sparser();
+  private Sparser sparser = new Sparser.SparserBuilder().build();
 
   @Test
   public void test() throws Exception {
@@ -29,9 +28,9 @@ public class CalibrationTest {
     ConjunctiveClause clause2 = new ConjunctiveClause();
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
-    ExactStringMatchPredicate esmp1 = new ExactStringMatchPredicate("text", new PredicateValue("Ronaldo"));
-    ExactStringMatchPredicate esmp2 = new ExactStringMatchPredicate("president", new PredicateValue("Biden"));
-    ExactStringMatchPredicate esmp3 = new ExactStringMatchPredicate("lang", new PredicateValue("en"));
+    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Ronaldo"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate("president", new PredicateValue("Biden"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate("lang", new PredicateValue("en"));
 
 
 
@@ -46,7 +45,7 @@ public class CalibrationTest {
 
     sparser.compile(clauses);
 
-    this.records = Utils.loadJson("twitter.json");
+    this.records = Utils.loadJson("benchmark/twitter2.json");
   }
 
 }

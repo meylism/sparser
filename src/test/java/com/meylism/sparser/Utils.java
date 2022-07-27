@@ -1,4 +1,4 @@
-package com.meylism.sparser.benchmark;
+package com.meylism.sparser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
