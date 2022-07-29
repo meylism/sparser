@@ -6,7 +6,6 @@ import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +17,10 @@ public class Sparser {
   private List<ConjunctiveClause> clauses;
   private Calibration calibration;
 
-  private Context context;
+  private Configuration conf;
 
-  private Sparser(Context context) {
-    this.context = context;
+  private Sparser(Configuration configuration) {
+    this.conf = configuration;
   }
 
   /**
@@ -33,21 +32,22 @@ public class Sparser {
    */
   public void compile(final List<ConjunctiveClause> clauses) {
     this.clauses = clauses;
+    RawFilterCompiler filterCompiler = new RawFilterCompiler(this.conf);
 
     for (ConjunctiveClause clause : clauses) {
       for (SimplePredicate predicate : clause.getSimplePredicates()) {
-        predicate.compileRawFilters();
+        predicate.compileRawFilters(filterCompiler);
       }
     }
   }
 
-  public void calibrate(List<String> samples, Deserializer deserializer) throws Exception {
-    this.calibration = new Calibration(clauses, deserializer);
-    this.calibration.calibrate(samples);
-  }
-
+  /**
+   *
+   * @param samples a list of conjunctive clauses
+   */
   public void calibrate(List<String> samples) throws Exception {
-    this.calibrate(samples, new JacksonDeserializer());
+    this.calibration = new Calibration(conf, clauses);
+    this.calibration.calibrate(samples);
   }
 
   public Boolean filter(String record) {
@@ -60,20 +60,20 @@ public class Sparser {
   }
 
   public static class SparserBuilder {
-    private Context context = new Context();
+    private Configuration configuration = new Configuration();
 
     // defaults
     public SparserBuilder() {
-      this.context.setFileFormat(FileFormat.JSON);
+      this.configuration.setFileFormat(FileFormat.JSON);
     }
 
     public SparserBuilder fileFormat(FileFormat fileFormat) {
-      this.context.setFileFormat(fileFormat);
+      this.configuration.setFileFormat(fileFormat);
       return this;
     }
 
     public Sparser build() {
-      return new Sparser(this.context);
+      return new Sparser(this.configuration);
     }
   }
 }

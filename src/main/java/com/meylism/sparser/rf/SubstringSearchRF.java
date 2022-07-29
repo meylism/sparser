@@ -9,6 +9,4 @@ public abstract class SubstringSearchRF extends RawFilter {
   public SubstringSearchRF(final String token) {
     this.token = token;
   }
-
-
 }

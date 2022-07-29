@@ -1,12 +1,15 @@
 package com.meylism.sparser.predicate;
 
 import com.meylism.sparser.rf.RawFilter;
+import com.meylism.sparser.RawFilterCompiler;
 import lombok.Getter;
 
 import java.util.ArrayList;
 
 public abstract class SimplePredicate {
+  @Getter
   final String key;
+  @Getter
   final PredicateValue value;
   @Getter
   ArrayList<RawFilter> rawFilters;
@@ -16,5 +19,7 @@ public abstract class SimplePredicate {
     this.value = value;
   }
 
-  public abstract void compileRawFilters();
+  public void compileRawFilters(RawFilterCompiler compiler) {
+    this.rawFilters = compiler.compile(this);
+  }
 }

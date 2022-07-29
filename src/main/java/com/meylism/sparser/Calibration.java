@@ -12,23 +12,9 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-public class Calibration {
+class Calibration {
   private static Logger logger = LogManager.getLogger(Calibration.class);
-  /**
-   * The maximum number of RFs to consider.
-   */
-  private static final Integer MAX_RF = 32;
-  private static final Integer MIN_RF = 4;
-
-  /**
-   * The maximum number of records to sample.
-   */
-  private static final Integer MAX_RECORDS = 100;
-  /**
-   * The maximum number of records to parse.
-   */
-  private static final Integer PARSER_MEASUREMENT_SAMPLES = 10;
-  private Deserializer deserializer;
+  private Configuration conf;
   private List<ConjunctiveClause> clauses;
 
   // cascade
@@ -51,14 +37,9 @@ public class Calibration {
   int samplesProcessed = 0;
   long parsedRecords = 0;
 
-  /**
-   *
-   * @param clauses a list of conjunctive clauses
-   * @param deserializer - deserializer that implements Deserializer. Defaults to Jackson
-   */
-  public Calibration(final List<ConjunctiveClause> clauses, final Deserializer deserializer) {
+  Calibration(Configuration conf, final List<ConjunctiveClause> clauses) {
+    this.conf = conf;
     this.clauses = clauses;
-    this.deserializer = deserializer;
     this.calculateTotalNumberOfRFs();
     assert totalNumberOfRFs > 0;
   }
@@ -68,17 +49,17 @@ public class Calibration {
    *
    * @param samples
    */
-  public void calibrate(List<String> samples) throws Exception {
-    final int NUM_OF_RECORDS = Math.min(MAX_RECORDS, samples.size());
+  void calibrate(List<String> samples) throws Exception {
+    final int NUM_OF_RECORDS = Math.min(Configuration.MAX_RECORDS, samples.size());
 
-    if (totalNumberOfRFs > MAX_RF) {
+    if (totalNumberOfRFs > Configuration.MAX_RF) {
       // if the number of RFs is greater than MAX_RF, select MAX_RF RFs randomly in a round-robin fashion
       // todo: select 32 by picking a random RF generated from each token in a round-robin fashion
     }
 
     final int CASCADE_DEPTH = this.clauses.size();
 
-    final int NUM_OF_RECORDS_TO_PARSE = Math.min(NUM_OF_RECORDS, PARSER_MEASUREMENT_SAMPLES);
+    final int NUM_OF_RECORDS_TO_PARSE = Math.min(NUM_OF_RECORDS, Configuration.PARSER_MEASUREMENT_SAMPLES);
 
     for (ConjunctiveClause clause : clauses) {
 
@@ -99,7 +80,7 @@ public class Calibration {
 
             if (parsedRecords <= NUM_OF_RECORDS_TO_PARSE) {
               long parseStart = TimeUtils.timeStart();
-              Object object = this.deserializer.deserialize(sample);
+              Object object = this.conf.getFileFormat().getDeserializer().deserialize(sample);
               long parseTimeElapsed = TimeUtils.timeStop(parseStart);
               assert object != null;
               avgParserRuntime += parseTimeElapsed;
