@@ -3,6 +3,7 @@ package com.meylism.sparser;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
+import com.meylism.sparser.support.FileFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class CalibrationTest {
   private ArrayList<String> records;
-  private Sparser sparser = new Sparser.SparserBuilder().build();
+  private Sparser sparser = new Sparser.SparserBuilder(FileFormat.JSON).build();
 
   @Test
   public void test() throws Exception {
@@ -31,8 +32,6 @@ public class CalibrationTest {
     ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Ronaldo"));
     ExactMatchPredicate esmp2 = new ExactMatchPredicate("president", new PredicateValue("Biden"));
     ExactMatchPredicate esmp3 = new ExactMatchPredicate("lang", new PredicateValue("en"));
-
-
 
     clause1.add(esmp1);
     clause2.add(esmp2);

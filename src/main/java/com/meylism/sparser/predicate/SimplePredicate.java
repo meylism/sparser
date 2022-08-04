@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public abstract class SimplePredicate {
   @Getter
-  final String key;
+  protected final String key;
   @Getter
-  final PredicateValue value;
+  protected final PredicateValue value;
   @Getter
-  ArrayList<RawFilter> rawFilters;
+  protected ArrayList<RawFilter> rawFilters;
 
   SimplePredicate(final String key, final PredicateValue value) {
     this.key = key;

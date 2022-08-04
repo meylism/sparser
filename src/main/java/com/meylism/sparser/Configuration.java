@@ -1,28 +1,32 @@
 package com.meylism.sparser;
 
+import com.meylism.sparser.support.FileFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
 public class Configuration {
+  @Setter
   private FileFormat fileFormat;
 
   // raw filter compilation
-  public final static Integer SUBSTRING_SIZE = 4;
+  /**
+   * The size of to-be generated tokens for RFs.
+   */
+  private final Integer substringSize = 4;
 
   // calibration
   /**
    * The maximum and minimum number of RFs to consider.
    */
-  public static final Integer MAX_RF = 32;
-  public static final Integer MIN_RF = 4;
+  private final Integer maxRF = 32;
+  private final Integer minRF = 4;
   /**
    * The maximum number of records to sample.
    */
-  public static final Integer MAX_RECORDS = 100;
+  private final Integer maxRecords = 100;
   /**
    * The maximum number of records to parse.
    */
-  public static final Integer PARSER_MEASUREMENT_SAMPLES = 10;
+  private final Integer parserMeasurementSamples = 10;
 }

@@ -1,23 +1,21 @@
 package com.meylism.sparser;
 
-import com.meylism.sparser.deserializer.Deserializer;
-import com.meylism.sparser.deserializer.JacksonDeserializer;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
+import com.meylism.sparser.support.FileFormat;
 
 import java.util.List;
 
 /**
- * Sparser is a raw filtering solution for filtering records before parsing.
+ * A facade for Sparser.
  *
  * @author Meylis Matiyev
  */
 public class Sparser {
   private List<ConjunctiveClause> clauses;
   private Calibration calibration;
-
-  private Configuration conf;
+  private final Configuration conf;
 
   private Sparser(Configuration configuration) {
     this.conf = configuration;
@@ -62,14 +60,13 @@ public class Sparser {
   public static class SparserBuilder {
     private Configuration configuration = new Configuration();
 
-    // defaults
-    public SparserBuilder() {
-      this.configuration.setFileFormat(FileFormat.JSON);
+    public SparserBuilder(FileFormat fileFormat) {
+      this.configuration.setFileFormat(fileFormat);
     }
 
-    public SparserBuilder fileFormat(FileFormat fileFormat) {
-      this.configuration.setFileFormat(fileFormat);
-      return this;
+    // defaults
+    private void initDefaults() {
+      // defaults
     }
 
     public Sparser build() {

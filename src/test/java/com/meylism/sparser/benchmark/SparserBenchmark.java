@@ -8,6 +8,7 @@ import com.meylism.sparser.Utils;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
+import com.meylism.sparser.support.FileFormat;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 public class SparserBenchmark {
   private ArrayList<String> lines;
-  private Sparser sparser = new SparserBuilder().build();
+  private Sparser sparser = new SparserBuilder(FileFormat.JSON).build();
   private ObjectMapper mapper = new ObjectMapper();
   public ArrayList<ConjunctiveClause> clauses = new ArrayList<>();
 
@@ -59,17 +60,18 @@ public class SparserBenchmark {
     lines = Utils.loadJson("benchmark/twitter2.json");
     System.out.println(lines.size());
 
+    // SELECT * FROM table WHERE text = "Elon" OR text = "Mask"
     ConjunctiveClause clause1 = new ConjunctiveClause();
-    ConjunctiveClause clause3 = new ConjunctiveClause();
+    ConjunctiveClause clause2 = new ConjunctiveClause();
 
     ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Elon"));
-    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("Putin"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate("text", new PredicateValue("Putin"));
 
     clause1.add(esmp1);
-    clause3.add(esmp3);
+    clause2.add(esmp2);
 
     clauses.add(clause1);
-    clauses.add(clause3);
+    clauses.add(clause2);
 
     sparser.compile(clauses);
     sparser.calibrate(lines);

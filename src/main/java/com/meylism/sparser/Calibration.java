@@ -50,16 +50,16 @@ class Calibration {
    * @param samples
    */
   void calibrate(List<String> samples) throws Exception {
-    final int NUM_OF_RECORDS = Math.min(Configuration.MAX_RECORDS, samples.size());
+    final int NUM_OF_RECORDS = Math.min(conf.getMaxRecords(), samples.size());
 
-    if (totalNumberOfRFs > Configuration.MAX_RF) {
+    if (totalNumberOfRFs > conf.getMaxRF()) {
       // if the number of RFs is greater than MAX_RF, select MAX_RF RFs randomly in a round-robin fashion
       // todo: select 32 by picking a random RF generated from each token in a round-robin fashion
     }
 
     final int CASCADE_DEPTH = this.clauses.size();
 
-    final int NUM_OF_RECORDS_TO_PARSE = Math.min(NUM_OF_RECORDS, Configuration.PARSER_MEASUREMENT_SAMPLES);
+    final int NUM_OF_RECORDS_TO_PARSE = Math.min(NUM_OF_RECORDS, conf.getParserMeasurementSamples());
 
     for (ConjunctiveClause clause : clauses) {
 

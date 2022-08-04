@@ -12,6 +12,9 @@ public class ConjunctiveClause {
     this.simplePredicates.add(simplePredicate);
   }
 
+  /**
+   * Get the total number of raw filters in this clause.
+   */
   public int getTotalNumberOfRFs() {
     int sum = 0;
     for (SimplePredicate predicate : simplePredicates)

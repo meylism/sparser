@@ -1,17 +1,16 @@
-package com.meylism.sparser;
+package com.meylism.sparser.support;
 
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.deserializer.JacksonDeserializer;
+
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-enum FileFormat {
-  JSON(
-      new FilterSupport(Predicate.EXACT_STRING_MATCH, RawFilter.UTF_SUBSTRING_SEARCH),
-      new FilterSupport(Predicate.EXACT_STRING_MATCH, RawFilter.UTF_KEY_VALUE_SEARCH)
+public enum FileFormat {
+  JSON (
+      new FilterSupport(PredicateSupport.EXACT_STRING_MATCH, RawFilterSupport.UTF_SUBSTRING_SEARCH)
   ) {
     @Override
     Deserializer initDeserializer() {
