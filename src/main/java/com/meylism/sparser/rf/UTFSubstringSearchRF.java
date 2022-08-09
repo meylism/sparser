@@ -1,5 +1,7 @@
 package com.meylism.sparser.rf;
 
+import lombok.ToString;
+
 public class UTFSubstringSearchRF extends SubstringSearchRF {
   public UTFSubstringSearchRF(String token) {
     super(token);

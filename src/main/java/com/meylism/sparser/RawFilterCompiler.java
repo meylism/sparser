@@ -33,7 +33,7 @@ public class RawFilterCompiler {
 
   private ArrayList<RawFilter> getRawFilter(
       FilterSupport support) {
-    List<RawFilter> rawFilters;
+    List<RawFilter> rawFilters = new ArrayList<>();
 
     switch (support.getPredicateSupport()){
     case EXACT_STRING_MATCH:
@@ -47,7 +47,12 @@ public class RawFilterCompiler {
 
     switch (support.getRawFilterSupport()){
     case UTF_SUBSTRING_SEARCH:
-      rawFilters = valueTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList());
+      rawFilters.addAll(
+              keyTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList())
+      );
+      rawFilters.addAll(
+              valueTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList())
+      );
       break;
     case UTF_KEY_VALUE_SEARCH:
     default:
@@ -60,6 +65,11 @@ public class RawFilterCompiler {
 
   ArrayList<String> tokenize(String token) {
     ArrayList<String> substrings = new ArrayList<>();
+
+    if (token.length() < conf.getSubstringSize()) {
+      substrings.add(token);
+      return substrings;
+    }
 
     for(int j=0; j<=token.length()-conf.getSubstringSize(); j++) {
       if (token.length() == conf.getSubstringSize() && j == 0) continue;
