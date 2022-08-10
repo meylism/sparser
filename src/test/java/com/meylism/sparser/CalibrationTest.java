@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -29,20 +30,15 @@ public class CalibrationTest {
     ConjunctiveClause clause2 = new ConjunctiveClause();
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
-    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Ronaldo"));
-    ExactMatchPredicate esmp2 = new ExactMatchPredicate("president", new PredicateValue("Biden"));
-    ExactMatchPredicate esmp3 = new ExactMatchPredicate("lang", new PredicateValue("en"));
+    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("elon"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate("president", new PredicateValue("musk"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate("lang", new PredicateValue("biden"));
 
     clause1.add(esmp1);
     clause2.add(esmp2);
     clause3.add(esmp3);
 
-    ArrayList<ConjunctiveClause> clauses = new ArrayList<>();
-    clauses.add(clause1);
-    clauses.add(clause2);
-    clauses.add(clause3);
-
-    sparser.compile(clauses);
+    sparser.compile(Arrays.asList(clause1, clause2, clause3));
 
     this.records = Utils.loadJson("benchmark/twitter2.json");
   }

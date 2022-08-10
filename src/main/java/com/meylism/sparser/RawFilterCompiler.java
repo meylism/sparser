@@ -47,9 +47,9 @@ public class RawFilterCompiler {
 
     switch (support.getRawFilterSupport()){
     case UTF_SUBSTRING_SEARCH:
-      rawFilters.addAll(
-              keyTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList())
-      );
+//      rawFilters.addAll(
+//              keyTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList())
+//      );
       rawFilters.addAll(
               valueTokens.stream().map(UTFSubstringSearchRF::new).collect(Collectors.toList())
       );
@@ -65,11 +65,7 @@ public class RawFilterCompiler {
 
   ArrayList<String> tokenize(String token) {
     ArrayList<String> substrings = new ArrayList<>();
-
-    if (token.length() < conf.getSubstringSize()) {
-      substrings.add(token);
-      return substrings;
-    }
+    substrings.add(token);
 
     for(int j=0; j<=token.length()-conf.getSubstringSize(); j++) {
       if (token.length() == conf.getSubstringSize() && j == 0) continue;
