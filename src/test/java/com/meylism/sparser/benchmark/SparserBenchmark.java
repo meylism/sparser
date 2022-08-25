@@ -2,13 +2,13 @@ package com.meylism.sparser.benchmark;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meylism.sparser.JacksonDeserializer;
 import com.meylism.sparser.Sparser;
-import com.meylism.sparser.Sparser.SparserBuilder;
-import com.meylism.sparser.Utils;
+import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
-import com.meylism.sparser.support.FileFormat;
+import com.meylism.sparser.FileFormat;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
@@ -27,16 +27,9 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 public class SparserBenchmark {
   private ArrayList<String> lines;
-  private Sparser sparser = new SparserBuilder(FileFormat.JSON).build();
+  private Sparser sparser = new Sparser(FileFormat.JSON);
   private ObjectMapper mapper = new ObjectMapper();
   public ArrayList<ConjunctiveClause> clauses = new ArrayList<>();
-
-  @Benchmark
-  public void benchSparserCalibration(Blackhole bh) throws Exception {
-    sparser.compile(clauses);
-    sparser.calibrate(lines);
-    bh.consume(sparser);
-  }
 
   @Benchmark
   public void benchSparser(Blackhole bh) throws Exception {
@@ -58,23 +51,29 @@ public class SparserBenchmark {
   @Setup
   public void setup() throws Exception {
     lines = Utils.loadJson("benchmark/twitter2.json");
-    System.out.println(lines.size());
+    Deserializer deserializer = new JacksonDeserializer();
 
-    // SELECT * FROM table WHERE text = "Elon" OR text = "Mask"
+    // Construct the query
+    // SELECT * FROM table WHERE text = "Elon" OR text = "Putin" OR text = "Biden"
     ConjunctiveClause clause1 = new ConjunctiveClause();
     ConjunctiveClause clause2 = new ConjunctiveClause();
+    ConjunctiveClause clause3 = new ConjunctiveClause();
+
 
     ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Elon"));
     ExactMatchPredicate esmp2 = new ExactMatchPredicate("text", new PredicateValue("Putin"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("Biden"));
 
     clause1.add(esmp1);
     clause2.add(esmp2);
+    clause3.add(esmp3);
 
     clauses.add(clause1);
     clauses.add(clause2);
+    clauses.add(clause3);
 
     sparser.compile(clauses);
-    sparser.calibrate(lines);
+    sparser.calibrate(lines, deserializer);
   }
 
   public static void main(String[] args) throws RunnerException {

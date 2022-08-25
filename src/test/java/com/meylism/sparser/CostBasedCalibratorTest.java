@@ -1,9 +1,9 @@
 package com.meylism.sparser;
 
+import com.meylism.sparser.benchmark.Utils;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
 import com.meylism.sparser.predicate.PredicateValue;
-import com.meylism.sparser.support.FileFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,28 +11,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class CalibrationTest {
+public class CostBasedCalibratorTest {
   private ArrayList<String> records;
-  private Sparser sparser = new Sparser.SparserBuilder(FileFormat.JSON).build();
+    private Sparser sparser = new Sparser(FileFormat.JSON);
 
-  @Test
-  public void test() throws Exception {
-    sparser.calibrate(records);
+  @Test public void test() throws Exception {
+    sparser.calibrate(records, new JacksonDeserializer());
 
     assertEquals(true, true);
   }
 
-  @Before
-  public void setUp() throws IOException {
+  @Before public void setUp() throws IOException {
     ConjunctiveClause clause1 = new ConjunctiveClause();
     ConjunctiveClause clause2 = new ConjunctiveClause();
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
     ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("elon"));
-    ExactMatchPredicate esmp2 = new ExactMatchPredicate("president", new PredicateValue("musk"));
-    ExactMatchPredicate esmp3 = new ExactMatchPredicate("lang", new PredicateValue("biden"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate("text", new PredicateValue("musk"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("biden"));
 
     clause1.add(esmp1);
     clause2.add(esmp2);

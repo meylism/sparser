@@ -2,15 +2,12 @@ package com.meylism.sparser.rf;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.BitSet;
 
 public abstract class RawFilter {
-  @Getter @Setter
-  private long avgRuntime;
-  @Getter
-  private BitSet passthroughMask;
+  @Getter @Setter private long avgRuntime;
+  @Getter private BitSet passthroughMask;
 
   public abstract Boolean evaluate(final Object record);
 

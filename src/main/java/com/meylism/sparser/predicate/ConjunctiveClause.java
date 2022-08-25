@@ -5,8 +5,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 
 public class ConjunctiveClause {
-  @Getter
-  private ArrayList<SimplePredicate> simplePredicates = new ArrayList<>();
+  @Getter private ArrayList<SimplePredicate> simplePredicates = new ArrayList<>();
 
   public void add(SimplePredicate simplePredicate) {
     this.simplePredicates.add(simplePredicate);

@@ -1,6 +1,6 @@
 package com.meylism.sparser;
 
-class TimeUtils {
+public class TimeUtils {
   public static long timeStart() {
     return System.nanoTime();
   }

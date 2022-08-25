@@ -1,32 +1,47 @@
 package com.meylism.sparser;
 
-import com.meylism.sparser.support.FileFormat;
+import com.meylism.sparser.calibration.Calibrator;
+import com.meylism.sparser.deserializer.Deserializer;
+import com.meylism.sparser.predicate.ConjunctiveClause;
+import com.meylism.sparser.rf.compiler.RawFilterCompiler;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
+import java.util.List;
+
 public class Configuration {
-  @Setter
-  private FileFormat fileFormat;
 
   // raw filter compilation
   /**
    * The size of to-be generated tokens for RFs.
    */
-  private final Integer substringSize = 4;
+  public static final Integer SUBSTRING_SIZE = 4;
 
   // calibration
   /**
    * The maximum and minimum number of RFs to consider.
    */
-  private final Integer maxRF = 32;
-  private final Integer minRF = 4;
+  public static final Integer MAX_RF = 32;
+  public static final Integer MIN_RF = 4;
   /**
    * The maximum number of records to sample.
    */
-  private final Integer maxRecords = 100;
+  public static final Integer MAX_RECORDS = 100;
   /**
    * The maximum number of records to parse.
    */
-  private final Integer parserMeasurementSamples = 10;
+  public static final Integer PARSER_MEASUREMENT_SAMPLES = 10;
+
+  /**
+   * Deserializer to be used while calibrating.
+   */
+  @Getter @Setter private Deserializer deserializer;
+
+  // general
+  @Getter @Setter private FileFormat fileFormat;
+  @Getter @Setter private Calibrator calibrator;
+  @Getter @Setter private RawFilterCompiler rawFilterCompiler;
+  @Getter @Setter private List<ConjunctiveClause> clauses;
+
+
 }

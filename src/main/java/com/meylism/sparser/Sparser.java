@@ -1,10 +1,15 @@
 package com.meylism.sparser;
 
+import com.meylism.sparser.calibration.Calibrator;
+import com.meylism.sparser.calibration.CostBasedCalibrator;
+import com.meylism.sparser.deserializer.Deserializer;
+import com.meylism.sparser.filter.Filter;
+import com.meylism.sparser.filter.MinimalistFilter;
 import com.meylism.sparser.predicate.ConjunctiveClause;
-import com.meylism.sparser.predicate.SimplePredicate;
-import com.meylism.sparser.rf.RawFilter;
-import com.meylism.sparser.support.FileFormat;
+import com.meylism.sparser.rf.compiler.RuleBasedRawFilterCompiler;
+import com.meylism.sparser.rf.compiler.RawFilterCompiler;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,13 +17,12 @@ import java.util.List;
  *
  * @author Meylis Matiyev
  */
-public class Sparser {
-  private List<ConjunctiveClause> clauses;
-  private Calibration calibration;
-  private final Configuration conf;
+public class Sparser implements Serializable {
+  private final Configuration configuration;
 
-  private Sparser(Configuration configuration) {
-    this.conf = configuration;
+  public Sparser(FileFormat fileFormat) {
+    configuration = new Configuration();
+    configuration.setFileFormat(fileFormat);
   }
 
   /**
@@ -29,48 +33,27 @@ public class Sparser {
    * @param clauses query predicate in DNF, that is, a list of conjunctive clauses
    */
   public void compile(final List<ConjunctiveClause> clauses) {
-    this.clauses = clauses;
-    RawFilterCompiler filterCompiler = new RawFilterCompiler(this.conf);
+    configuration.setClauses(clauses);
+    RawFilterCompiler filterCompiler = new RuleBasedRawFilterCompiler(this.configuration);
+    configuration.setRawFilterCompiler(filterCompiler);
 
-    for (ConjunctiveClause clause : clauses) {
-      for (SimplePredicate predicate : clause.getSimplePredicates()) {
-        predicate.compileRawFilters(filterCompiler);
-      }
-    }
+    configuration.getRawFilterCompiler().compile();
   }
 
   /**
    *
    * @param samples a list of conjunctive clauses
    */
-  public void calibrate(List<String> samples) throws Exception {
-    this.calibration = new Calibration(conf, clauses);
-    this.calibration.calibrate(samples);
+  public void calibrate(List<String> samples, Deserializer deserializer) throws Exception {
+    Filter filter = new MinimalistFilter(this.configuration);
+    Calibrator calibrator = new CostBasedCalibrator(configuration, filter);
+    configuration.setDeserializer(deserializer);
+    configuration.setCalibrator(calibrator);
+
+    configuration.getCalibrator().calibrate(samples);
   }
 
-  public Boolean filter(String record) {
-//    int passed = 0;
-    for(RawFilter rawFilter : this.calibration.getBestCascade()) {
-      if (rawFilter.evaluate(record))
-        return true;
-    }
-    return false;
-  }
-
-  public static class SparserBuilder {
-    private Configuration configuration = new Configuration();
-
-    public SparserBuilder(FileFormat fileFormat) {
-      this.configuration.setFileFormat(fileFormat);
-    }
-
-    // defaults
-    private void initDefaults() {
-      // defaults
-    }
-
-    public Sparser build() {
-      return new Sparser(this.configuration);
-    }
+  public Boolean filter(Object record) {
+    return configuration.getCalibrator().getFilter().filter(record);
   }
 }
