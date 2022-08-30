@@ -1,11 +1,11 @@
 package com.meylism.sparser.rf.compiler;
 
 import com.meylism.sparser.Configuration;
+import com.meylism.sparser.FileFormat;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
 import com.meylism.sparser.rf.UTFSubstringSearchRF;
-import com.meylism.sparser.FileFormat;
 import com.meylism.sparser.support.PredicateSupport;
 import com.meylism.sparser.support.RawFilterSupport;
 

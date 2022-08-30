@@ -2,6 +2,7 @@ package com.meylism.sparser;
 
 import com.meylism.sparser.calibration.Calibrator;
 import com.meylism.sparser.deserializer.Deserializer;
+import com.meylism.sparser.filter.Filter;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.rf.compiler.RawFilterCompiler;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class Configuration {
   @Getter @Setter private Calibrator calibrator;
   @Getter @Setter private RawFilterCompiler rawFilterCompiler;
   @Getter @Setter private List<ConjunctiveClause> clauses;
+  @Getter @Setter private Filter filter;
 
 
 }

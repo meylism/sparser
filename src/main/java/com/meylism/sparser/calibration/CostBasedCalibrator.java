@@ -2,7 +2,6 @@ package com.meylism.sparser.calibration;
 
 import com.meylism.sparser.Configuration;
 import com.meylism.sparser.TimeUtils;
-import com.meylism.sparser.filter.Filter;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.SimplePredicate;
 import com.meylism.sparser.rf.RawFilter;
@@ -35,8 +34,8 @@ public class CostBasedCalibrator extends Calibrator {
   int samplesProcessed = 0;
   long parsedRecords = 0;
 
-  public CostBasedCalibrator(Configuration conf, Filter filter) {
-    super(conf, filter);
+  public CostBasedCalibrator(Configuration conf) {
+    super(conf);
     this.calculateTotalNumberOfRFs();
     assert totalNumberOfRFs > 0;
   }
@@ -46,7 +45,7 @@ public class CostBasedCalibrator extends Calibrator {
    *
    * @param samples
    */
-  public void calibrate(List samples) throws Exception {
+  public List<RawFilter> calibrate(List samples) throws Exception {
     final int NUM_OF_RECORDS = Math.min(Configuration.MAX_RECORDS, samples.size());
 
     if (totalNumberOfRFs > Configuration.MAX_RF) {
@@ -103,12 +102,10 @@ public class CostBasedCalibrator extends Calibrator {
 
     chooseTheBestCascade(CASCADE_DEPTH, 0, CASCADE_DEPTH);
     assert bestCascade.size() == CASCADE_DEPTH;
+
+    return bestCascade;
   }
 
-  @Override
-  public Filter getFilter() {
-    return filter;
-  }
 
   /**
    * Recursively generate combinations of RFs and choose the best one.
@@ -193,9 +190,5 @@ public class CostBasedCalibrator extends Calibrator {
     for (ConjunctiveClause clause : this.configuration.getClauses())
       sum += clause.getTotalNumberOfRFs();
     this.totalNumberOfRFs = sum;
-  }
-
-  @Override public List<RawFilter> getBestCascade() {
-    return bestCascade;
   }
 }

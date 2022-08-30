@@ -4,10 +4,10 @@ import com.meylism.sparser.calibration.Calibrator;
 import com.meylism.sparser.calibration.CostBasedCalibrator;
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.filter.Filter;
-import com.meylism.sparser.filter.MinimalistFilter;
 import com.meylism.sparser.predicate.ConjunctiveClause;
-import com.meylism.sparser.rf.compiler.RuleBasedRawFilterCompiler;
+import com.meylism.sparser.rf.RawFilter;
 import com.meylism.sparser.rf.compiler.RawFilterCompiler;
+import com.meylism.sparser.rf.compiler.RuleBasedRawFilterCompiler;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,10 +19,12 @@ import java.util.List;
  */
 public class Sparser implements Serializable {
   private final Configuration configuration;
+  private List<RawFilter> bestCascade;
 
   public Sparser(FileFormat fileFormat) {
     configuration = new Configuration();
     configuration.setFileFormat(fileFormat);
+    configuration.setFilter(new Filter(configuration, bestCascade));
   }
 
   /**
@@ -45,15 +47,14 @@ public class Sparser implements Serializable {
    * @param samples a list of conjunctive clauses
    */
   public void calibrate(List<String> samples, Deserializer deserializer) throws Exception {
-    Filter filter = new MinimalistFilter(this.configuration);
-    Calibrator calibrator = new CostBasedCalibrator(configuration, filter);
+    Calibrator calibrator = new CostBasedCalibrator(configuration);
     configuration.setDeserializer(deserializer);
     configuration.setCalibrator(calibrator);
 
-    configuration.getCalibrator().calibrate(samples);
+    bestCascade = configuration.getCalibrator().calibrate(samples);
   }
 
   public Boolean filter(Object record) {
-    return configuration.getCalibrator().getFilter().filter(record);
+    return configuration.getFilter().filter(record);
   }
 }
