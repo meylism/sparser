@@ -17,14 +17,13 @@ import java.util.List;
  *
  * @author Meylis Matiyev
  */
-public class Sparser implements Serializable {
+public class Sparser {
   private final Configuration configuration;
-  private List<RawFilter> bestCascade;
 
   public Sparser(FileFormat fileFormat) {
     configuration = new Configuration();
     configuration.setFileFormat(fileFormat);
-    configuration.setFilter(new Filter(configuration, bestCascade));
+    configuration.setFilter(new Filter(configuration));
   }
 
   /**
@@ -50,8 +49,7 @@ public class Sparser implements Serializable {
     Calibrator calibrator = new CostBasedCalibrator(configuration);
     configuration.setDeserializer(deserializer);
     configuration.setCalibrator(calibrator);
-
-    bestCascade = configuration.getCalibrator().calibrate(samples);
+    this.configuration.setBestCascade(configuration.getCalibrator().calibrate(samples));
   }
 
   public Boolean filter(Object record) {

@@ -6,7 +6,8 @@ import lombok.ToString;
 @ToString public abstract class SubstringSearchRF extends RawFilter {
   @Getter private final String token;
 
-  public SubstringSearchRF(final String token) {
+  protected SubstringSearchRF(final String token) {
+    super();
     this.token = token;
   }
 }

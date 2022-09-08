@@ -3,6 +3,7 @@ package com.meylism.sparser;
 import com.meylism.sparser.benchmark.Utils;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
+import com.meylism.sparser.predicate.PredicateKey;
 import com.meylism.sparser.predicate.PredicateValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +29,9 @@ public class CostBasedCalibratorTest {
     ConjunctiveClause clause2 = new ConjunctiveClause();
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
-    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("elon"));
-    ExactMatchPredicate esmp2 = new ExactMatchPredicate("text", new PredicateValue("musk"));
-    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("biden"));
+    ExactMatchPredicate esmp1 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("elon"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("musk"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("biden"));
 
     clause1.add(esmp1);
     clause2.add(esmp2);

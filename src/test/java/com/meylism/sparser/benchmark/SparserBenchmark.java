@@ -7,6 +7,7 @@ import com.meylism.sparser.Sparser;
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.predicate.ConjunctiveClause;
 import com.meylism.sparser.predicate.ExactMatchPredicate;
+import com.meylism.sparser.predicate.PredicateKey;
 import com.meylism.sparser.predicate.PredicateValue;
 import com.meylism.sparser.FileFormat;
 import org.openjdk.jmh.annotations.*;
@@ -60,9 +61,9 @@ public class SparserBenchmark {
     ConjunctiveClause clause3 = new ConjunctiveClause();
 
 
-    ExactMatchPredicate esmp1 = new ExactMatchPredicate("text", new PredicateValue("Elon"));
-    ExactMatchPredicate esmp2 = new ExactMatchPredicate("text", new PredicateValue("Putin"));
-    ExactMatchPredicate esmp3 = new ExactMatchPredicate("text", new PredicateValue("Biden"));
+    ExactMatchPredicate esmp1 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("Elon"));
+    ExactMatchPredicate esmp2 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("Putin"));
+    ExactMatchPredicate esmp3 = new ExactMatchPredicate(new PredicateKey("text"), new PredicateValue("Biden"));
 
     clause1.add(esmp1);
     clause2.add(esmp2);

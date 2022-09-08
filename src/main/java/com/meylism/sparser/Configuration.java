@@ -4,6 +4,7 @@ import com.meylism.sparser.calibration.Calibrator;
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.filter.Filter;
 import com.meylism.sparser.predicate.ConjunctiveClause;
+import com.meylism.sparser.rf.RawFilter;
 import com.meylism.sparser.rf.compiler.RawFilterCompiler;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class Configuration {
   @Getter @Setter private RawFilterCompiler rawFilterCompiler;
   @Getter @Setter private List<ConjunctiveClause> clauses;
   @Getter @Setter private Filter filter;
+  @Getter @Setter private List<RawFilter> bestCascade;
 
 
 }

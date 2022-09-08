@@ -32,14 +32,15 @@ public class RuleBasedRawFilterCompiler implements RawFilterCompiler {
   }
 
   private ArrayList<RawFilter> processPredicate(SimplePredicate predicate) {
-    keyTokens = this.tokenize(predicate.getKey());
-    valueTokens = this.tokenize(predicate.getValue().getValue());
+    keyTokens = this.tokenize(predicate.getKey().getColumnName());
+    valueTokens = this.tokenize(predicate.getValue().getValue(this.conf));
     ArrayList<RawFilter> rawFilters = new ArrayList<>();
 
     rawFilters.addAll(getRawFilter(predicate.getType()));
 
     return rawFilters;
   }
+
 
   private ArrayList<RawFilter> getRawFilter(PredicateSupport support) {
     List<RawFilter> rawFilters = new ArrayList<>();
@@ -65,7 +66,7 @@ public class RuleBasedRawFilterCompiler implements RawFilterCompiler {
     for (int j = 0; j <= token.length() - Configuration.SUBSTRING_SIZE; j++) {
       if (token.length() == Configuration.SUBSTRING_SIZE && j == 0)
         continue;
-      substrings.add(token.substring(j, Configuration.SUBSTRING_SIZE));
+      substrings.add(token.substring(j, j+Configuration.SUBSTRING_SIZE));
     }
     return substrings;
   }

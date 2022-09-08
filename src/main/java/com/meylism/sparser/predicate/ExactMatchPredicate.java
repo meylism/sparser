@@ -4,7 +4,7 @@ import com.meylism.sparser.support.PredicateSupport;
 
 public class ExactMatchPredicate extends SimplePredicate {
 
-  public ExactMatchPredicate(String key, PredicateValue value) {
+  public ExactMatchPredicate(PredicateKey key, PredicateValue value) {
     super(key, value);
   }
 

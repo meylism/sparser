@@ -8,13 +8,15 @@ import lombok.Setter;
 import java.util.ArrayList;
 
 public abstract class SimplePredicate {
-  @Getter protected final String key;
+  @Getter protected final PredicateKey key;
   @Getter protected final PredicateValue value;
+  @Setter @Getter protected Boolean inverted;
   @Setter @Getter protected ArrayList<RawFilter> rawFilters;
 
-  protected SimplePredicate(final String key, final PredicateValue value) {
+  protected SimplePredicate(final PredicateKey key, final PredicateValue value) {
     this.key = key;
     this.value = value;
+    this.inverted = false;
   }
 
   public abstract PredicateSupport getType();

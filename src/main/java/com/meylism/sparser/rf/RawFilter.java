@@ -1,5 +1,6 @@
 package com.meylism.sparser.rf;
 
+import com.meylism.sparser.rf.compiler.RawFilterCompiler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,11 @@ import java.util.BitSet;
 public abstract class RawFilter {
   @Getter @Setter private long avgRuntime;
   @Getter private BitSet passthroughMask;
+  @Getter @Setter private Boolean inverted;
+
+  protected RawFilter() {
+    this.inverted = false;
+  }
 
   public abstract Boolean evaluate(final Object record);
 

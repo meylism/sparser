@@ -7,16 +7,14 @@ import java.util.List;
 
 public class Filter {
   private Configuration configuration;
-  private List<RawFilter> bestCascade;
 
-  public Filter(Configuration configuration, List<RawFilter> bestCascade) {
+  public Filter(Configuration configuration) {
     this.configuration = configuration;
-    this.bestCascade = bestCascade;
   }
 
   public Boolean filter(Object record) {
     //    int passed = 0;
-    for (RawFilter rawFilter : bestCascade) {
+    for (RawFilter rawFilter : this.configuration.getBestCascade()) {
       if (rawFilter.evaluate(record))
         return true;
     }
