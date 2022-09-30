@@ -1,58 +1,76 @@
 package com.meylism.sparser;
 
-import com.meylism.sparser.calibration.Calibrator;
-import com.meylism.sparser.calibration.CostBasedCalibrator;
+import com.google.common.base.Preconditions;
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.filter.Filter;
-import com.meylism.sparser.predicate.ConjunctiveClause;
-import com.meylism.sparser.rf.RawFilter;
-import com.meylism.sparser.rf.compiler.RawFilterCompiler;
-import com.meylism.sparser.rf.compiler.RuleBasedRawFilterCompiler;
+import com.meylism.sparser.operator.compiler.RawFilterCompiler;
+import com.meylism.sparser.operator.compiler.RuleBasedRawFilterCompiler;
+import com.meylism.sparser.optimization.CostBasedOptimizer;
+import com.meylism.sparser.optimization.Optimizer;
+import com.meylism.sparser.optimization.transformation.FilterPruningTransformer;
+import com.meylism.sparser.optimization.transformation.Transformer;
+import com.meylism.sparser.predicate.Predicate;
 
-import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * A facade for Sparser.
- *
- * @author Meylis Matiyev
  */
 public class Sparser {
   private final Configuration configuration;
+  private final Predicate predicate;
+  private Filter filter;
+  private final Deserializer deserializer;
 
-  public Sparser(FileFormat fileFormat) {
+  /**
+   *
+   * @param predicate query predicate in DNF(disjunctive normal form)
+   * @param fileFormat format of the data being filtered
+   * @param deserializer deserializer that will be used while optimizing Sparser
+   */
+  public Sparser(Predicate predicate, FileFormat fileFormat, Deserializer deserializer) {
+    Preconditions.checkNotNull(predicate, "predicate");
+    Preconditions.checkNotNull(fileFormat, "fileformat");
+    Preconditions.checkNotNull(deserializer, "deserializer");
+
     configuration = new Configuration();
+    this.predicate = predicate;
     configuration.setFileFormat(fileFormat);
-    configuration.setFilter(new Filter(configuration));
+    this.deserializer = deserializer;
+    compile();
+    this.filter = initFilter();
   }
 
   /**
-   * Compile possible filtering primitives, called raw filters(RFs), from the given query predicate.
-   * The function expects the query predicate to be in disjunctive normal form(i.e., of the form (a AND b) OR (c AND
-   * …) OR … ). An expression with only conjunctions(AND) is referred to as a conjunctive clause.
+   * Apply filter on the given record.
    *
-   * @param clauses query predicate in DNF, that is, a list of conjunctive clauses
+   * @return true if record can be filtered
    */
-  public void compile(final List<ConjunctiveClause> clauses) {
-    configuration.setClauses(clauses);
-    RawFilterCompiler filterCompiler = new RuleBasedRawFilterCompiler(this.configuration);
-    configuration.setRawFilterCompiler(filterCompiler);
-
-    configuration.getRawFilterCompiler().compile();
-  }
-
-  /**
-   *
-   * @param samples a list of conjunctive clauses
-   */
-  public void calibrate(List<String> samples, Deserializer deserializer) throws Exception {
-    Calibrator calibrator = new CostBasedCalibrator(configuration);
-    configuration.setDeserializer(deserializer);
-    configuration.setCalibrator(calibrator);
-    this.configuration.setBestCascade(configuration.getCalibrator().calibrate(samples));
-  }
-
   public Boolean filter(Object record) {
-    return configuration.getFilter().filter(record);
+    return filter.filter(record);
+  }
+
+  /**
+   * Compile possible filtering primitives from the given query predicate.
+   * The function expects the query predicate to be in disjunctive normal form(i.e., of the form (a AND b) OR (c AND
+   * …) OR … ).
+   */
+  private void compile() {
+    //    if (!PredicateUtils.isInDnf(predicate)) throw new RuntimeException("The query doesn't seem to be in DNF");
+    RawFilterCompiler filterCompiler = new RuleBasedRawFilterCompiler(this.configuration);
+    filterCompiler.compile(predicate);
+  }
+
+  private Filter initFilter() {
+    return new Filter(configuration, predicate, initTransformers(), initOptimizers());
+  }
+
+  private List<Transformer> initTransformers() {
+    return Arrays.asList(new FilterPruningTransformer(this.configuration));
+  }
+
+  private List<Optimizer> initOptimizers() {
+    return Arrays.asList(new CostBasedOptimizer(this.configuration, this.deserializer));
   }
 }

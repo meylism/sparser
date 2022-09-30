@@ -4,6 +4,18 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * Representation of a key in a SQL query.
+ *
+ * For example:
+ * CREATE TABLE imaginaryTable (employee struct<name:struct<firstname:string,lastname:string>, age int, ...>, ...);
+ * SELECT employee.name.firstname FROM imaginaryTable;
+ *
+ * Then:
+ * tableName : imaginaryTable
+ * columnName: employee
+ * fieldNames: name,firstname (in the order of access)
+ */
 public class PredicateKey {
   @Getter  private String tableName;
   @Getter private String columnName;

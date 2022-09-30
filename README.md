@@ -2,6 +2,8 @@
 
 
 
+
+
 ## Supported Predicates
 
 | Filters         | Description                                                                                                                                | Examples                                      |
@@ -18,3 +20,7 @@ Limitations on predicate support:
 * Doesn't support inequality for string values(???).
 * `Key-Value Match` filter is only valid for data formats such as JSON where keys explicitly exist in the record.
 
+### Questions
+
+* How data based applications are tested?
+* implement isDnf

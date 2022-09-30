@@ -1,23 +1,30 @@
 package com.meylism.sparser.predicate;
 
-import com.meylism.sparser.rf.RawFilter;
-import com.meylism.sparser.support.PredicateSupport;
+import com.meylism.sparser.Configuration;
+import com.meylism.sparser.operator.FilterOperator;
+import com.meylism.sparser.operator.compiler.RawFilterCompiler;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-public abstract class SimplePredicate {
+public abstract class SimplePredicate extends Predicate {
   @Getter protected final PredicateKey key;
-  @Getter protected final PredicateValue value;
+  @Getter protected final String value;
   @Setter @Getter protected Boolean inverted;
-  @Setter @Getter protected ArrayList<RawFilter> rawFilters;
+  @Setter @Getter protected Set<FilterOperator> rawFilters;
 
-  protected SimplePredicate(final PredicateKey key, final PredicateValue value) {
+  protected SimplePredicate(final PredicateKey key, final Object value) {
     this.key = key;
-    this.value = value;
+    this.value = initValue(value);
     this.inverted = false;
   }
 
-  public abstract PredicateSupport getType();
+  // SimplePredicate is a leaf node and therefore contains no child.
+  public List<Predicate> getChildren() { return null; }
+
+  protected String initValue(Object value) {
+    return (String) value;
+  }
 }

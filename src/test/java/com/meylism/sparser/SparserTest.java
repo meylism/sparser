@@ -1,7 +1,7 @@
 //package com.meylism.sparser;
 //
 //import com.meylism.sparser.predicate.ConjunctiveClause;
-//import com.meylism.sparser.predicate.ExactMatchPredicate;
+//import com.meylism.sparser.predicate.simple.ExactMatchPredicate;
 //import com.meylism.sparser.predicate.PredicateValue;
 //import org.junit.Assert;
 //import org.junit.Test;
