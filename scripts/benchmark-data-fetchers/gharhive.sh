@@ -15,6 +15,3 @@ cat $HOME/Downloads/data-gharchive/*.json >> $HOME/Downloads/data-gharchive/$agg
 
 # delete stuff
 rm $HOME/Downloads/data-gharchive/$year*.json
-
-# create a symlink
-ln -s $HOME/Downloads/data-gharchive/$aggregated $HOME/Documents/sparser-port/src/test/resources/benchmark/$aggregated
