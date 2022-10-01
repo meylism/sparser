@@ -1,7 +1,6 @@
 package com.meylism.sparser.benchmark;
 
 import com.meylism.sparser.FileFormat;
-import com.meylism.sparser.JacksonDeserializer;
 import com.meylism.sparser.Sparser;
 import com.meylism.sparser.deserializer.Deserializer;
 import com.meylism.sparser.predicate.PredicateKey;

@@ -1,4 +1,4 @@
-package com.meylism.sparser;
+package com.meylism.sparser.benchmark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meylism.sparser.deserializer.Deserializer;
