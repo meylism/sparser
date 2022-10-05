@@ -4,18 +4,18 @@ import com.meylism.sparser.core.FileFormat;
 import com.meylism.sparser.core.deserializer.Deserializer;
 import com.meylism.sparser.core.predicate.Predicate;
 
+import java.io.File;
+
 public interface QueryDescription {
   String getName();
 
-  String getQueryAsString();
+  String getQueryDescription();
 
   Predicate getQuery();
 
   FileFormat getFileFormat();
 
-  Class<? extends Reader> getReader();
+  Reader getReader(File file);
 
-  Dataset getDataset();
-
-  Class<? extends Deserializer> getDeserializer();
+  Deserializer getDeserializer();
 }

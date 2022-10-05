@@ -3,6 +3,7 @@ package com.meylism.sparser.benchmark;
 import lombok.Getter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public abstract class Reader {

@@ -3,6 +3,10 @@ package com.meylism.sparser.benchmark.json;
 import com.meylism.sparser.benchmark.QueryDescription;
 import com.meylism.sparser.benchmark.Reader;
 import com.meylism.sparser.core.FileFormat;
+import com.meylism.sparser.core.deserializer.Deserializer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public abstract class DefaultJsonQueryDescription implements QueryDescription {
 
@@ -10,11 +14,11 @@ public abstract class DefaultJsonQueryDescription implements QueryDescription {
     return FileFormat.JSON;
   }
 
-  @Override public Class<? extends Reader> getReader() {
-    return JsonReader.class;
+  @Override public Reader getReader(File file) {
+    return new JsonReader(file);
   }
 
-  @Override public Class<JacksonDeserializer> getDeserializer() {
-    return JacksonDeserializer.class;
+  @Override public Deserializer getDeserializer() {
+    return new JacksonDeserializer();
   }
 }

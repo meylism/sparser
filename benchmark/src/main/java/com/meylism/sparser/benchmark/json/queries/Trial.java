@@ -1,7 +1,6 @@
 package com.meylism.sparser.benchmark.json.queries;
 
 import com.google.auto.service.AutoService;
-import com.meylism.sparser.benchmark.Dataset;
 import com.meylism.sparser.benchmark.QueryDescription;
 import com.meylism.sparser.benchmark.json.DefaultJsonQueryDescription;
 import com.meylism.sparser.core.predicate.Predicate;
@@ -17,7 +16,7 @@ public class Trial extends DefaultJsonQueryDescription {
     return "trial";
   }
 
-  @Override public String getQueryAsString() {
+  @Override public String getQueryDescription() {
     return "trial";
   }
 
@@ -40,9 +39,5 @@ public class Trial extends DefaultJsonQueryDescription {
     predicate.add(clause3);
 
     return predicate;
-  }
-
-  @Override public Dataset getDataset() {
-    return Dataset.GHARCHIVE;
   }
 }

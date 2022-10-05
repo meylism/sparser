@@ -30,7 +30,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>benchmark-with-dependencies</finalName>
+              <finalName>benchmark</finalName>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <transformers>
                 <transformer>

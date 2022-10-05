@@ -12,9 +12,13 @@ public class JsonReader extends Reader {
   private Scanner scanner;
   private List<String> lines;
 
-  public JsonReader(File file) throws FileNotFoundException {
+  public JsonReader(File file) {
     super(file);
-    this.scanner = new Scanner(file);
+    try {
+      this.scanner = new Scanner(file);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(file.getAbsolutePath() + " doesn't exist");
+    }
     lines = new ArrayList<>();
     populateList();
   }

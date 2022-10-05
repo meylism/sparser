@@ -1,5 +1,7 @@
 package com.meylism.sparser.benchmark;
 
+import com.meylism.sparser.benchmark.state.BenchmarkState;
+import com.meylism.sparser.benchmark.state.BenchmarkStatsState;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
@@ -26,17 +28,21 @@ public class Benchmark {
   @org.openjdk.jmh.annotations.Benchmark
   public void sparser(BenchmarkState state, BenchmarkStatsState statsState, Blackhole blackhole) throws Exception {
     for (String record : state.getReader().read()) {
-      if (!state.getSparser().filter(record)) {
+      if (state.getSparser().filter(record)) {
         statsState.filteredRecords++;
+      } else {
         blackhole.consume(state.getDeserializer().deserialize(record));
       }
       statsState.recordsSoFar++;
     }
   }
 
-  public void bench() throws RunnerException {
+  public void bench(String query, String dataset) throws RunnerException {
       Options options = new OptionsBuilder()
           .include(getClass().getSimpleName())
+          // the query to be benchmarked is passed here
+          .param("query", query)
+          .param("dataset", dataset)
           .build();
 
       new Runner(options).run();
