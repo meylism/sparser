@@ -9,7 +9,7 @@ interface, which is essentially a query representation in this project. Pay atte
 query below.
 
 ```java
-// This is annotation necessary to be able to discover queries at run-time.
+// This annotation is necessary to be able to discover queries at run-time.
 @AutoService(QueryDescription.class)
 public class ExampleQuery implements QueryDescription {
   @Override public String getName() {
