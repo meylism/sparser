@@ -37,11 +37,11 @@ public class Benchmark {
     }
   }
 
-  public void bench(String query, String dataset) throws RunnerException {
+  public void bench(String[] queries, String dataset) throws RunnerException {
       Options options = new OptionsBuilder()
           .include(getClass().getSimpleName())
           // the query to be benchmarked is passed here
-          .param("query", query)
+          .param("query", queries)
           .param("dataset", dataset)
           .build();
 

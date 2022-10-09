@@ -68,7 +68,7 @@ There are two key challenges in designing filtering primitives:
 
 Sparser's solutions for the challenges above:
 1. asfda
-2. parser encompasses a cost-based [optimizer](./core/src/main/java/com/meylism/sparser/core/optimization/CostBasedOptimizer.java)
+2. Sparser encompasses a cost-based [optimizer](./core/src/main/java/com/meylism/sparser/core/optimization/CostBasedOptimizer.java)
    that help select the optimal cascade. Furthermore, Sparser [prunes](./core/src/main/java/com/meylism/sparser/core/optimization/transformation/FilterPruningTransformer.java) the search space by
    restricting the number of filter primitives considered to avoid long search times.
 

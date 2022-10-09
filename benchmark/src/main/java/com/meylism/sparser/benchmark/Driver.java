@@ -4,9 +4,7 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 public class Driver {
   private static final ServiceLoader<QueryDescription> loader =  ServiceLoader.load(QueryDescription.class);
@@ -31,14 +29,14 @@ public class Driver {
       if (!cli.hasOption(BenchmarkOptions.DATASET.shortName())) {
         throw new RuntimeException("Query is provided but dataset is not");
       }
-      String query = cli.getOptionValue(BenchmarkOptions.QUERY.shortName());
+      String[] queries = cli.getOptionValues(BenchmarkOptions.QUERY.shortName());
       String dataset  = cli.getOptionValue(BenchmarkOptions.DATASET.shortName());
       if (!new File(dataset).exists()) {
         throw new RuntimeException("Dataset " + dataset + " doesn't exist");
       }
 
-      validateQuery(query);
-      new Benchmark().bench(query, dataset);
+      validateQueries(queries);
+      new Benchmark().bench(queries, dataset);
     }
   }
 
@@ -46,6 +44,9 @@ public class Driver {
     Map<String, QueryDescription> queryDefinitions = new HashMap<>();
 
     for (QueryDescription qd : loader) {
+      if (queryDefinitions.containsKey(qd.getName())) {
+        throw new RuntimeException("Duplicate definition of the following query has bee found: " + qd.getName());
+      }
       queryDefinitions.put(qd.getName(), qd);
     }
 
@@ -55,10 +56,19 @@ public class Driver {
   /**
    * Ensure that requested queries actually exist.
    */
-  private static void validateQuery(String query) {
-    if (queryDefinitions.get(query) == null) {
-      String sb = "The following query does not exist:\n" + query + "\n";
-      throw new RuntimeException(sb);
+  private static void validateQueries(String[] queries) {
+    List<String> notFound = new ArrayList<>();
+    for (String query : queries) {
+      if (queryDefinitions.get(query) == null)
+        notFound.add(query);
+    }
+
+    if (notFound.size() > 0) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("The following queries do not exist:\n");
+      for (String notFoundQuery : notFound)
+        sb.append(notFoundQuery + '\n');
+      throw new RuntimeException(sb.toString());
     }
   }
 

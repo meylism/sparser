@@ -60,7 +60,7 @@ usage: java -jar <jar> [-d <arg>] [-h] [-l] [-q <arg>]
                       query
  -h,--help            Ask for help
  -l,--list            List available queries
- -q,--query <arg>     The name of the query to be benchmarked
+ -q,--query <arg>     Names of the queries to be benchmarked
 ```
 
 For example, to run the query above:

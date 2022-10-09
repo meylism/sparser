@@ -28,8 +28,8 @@ public class Cli {
   private Options initOptions() {
     Option query = Option.builder(BenchmarkOptions.QUERY.shortName())
         .longOpt(BenchmarkOptions.QUERY.longName())
-        .hasArg()
-        .desc("The name of the query to be benchmarked")
+        .hasArgs()
+        .desc("Names of the queries to be benchmarked")
         .build();
 
     Option dataset = Option.builder(BenchmarkOptions.DATASET.shortName())

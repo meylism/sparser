@@ -32,8 +32,7 @@ public class BenchmarkState {
   @Getter private String dataset;
 
   @Setup
-  public void setup()
-      throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+  public void setup() {
     QueryDescription query = getQueryByName(this.query);
     Preconditions.checkNotNull(query, "query cannot be null");
 
