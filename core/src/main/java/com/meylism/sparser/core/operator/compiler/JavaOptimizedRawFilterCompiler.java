@@ -13,14 +13,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Compiles filter operators(primitives) based on the provided support map.
+ * Compiles filter operators(primitives) in a way that's optimized way for Java's string search algorithms.
  */
-public class RuleBasedRawFilterCompiler extends RawFilterCompiler {
+public class JavaOptimizedRawFilterCompiler extends RawFilterCompiler {
   private ArrayList<String> keyTokens;
   private ArrayList<String> valueTokens;
   private Map<FileFormat, Map<PredicateSupport, List<RawFilterSupport>>> supportMap;
 
-  public RuleBasedRawFilterCompiler(Configuration configuration) {
+  public JavaOptimizedRawFilterCompiler(Configuration configuration) {
     super(configuration);
     supportMap = initMappingOfSupport();
   }
@@ -58,10 +58,11 @@ public class RuleBasedRawFilterCompiler extends RawFilterCompiler {
     for (RawFilterSupport rawFilterSupport : rawFilterSupportList) {
       switch (rawFilterSupport) {
       case UTF_SUBSTRING_SEARCH:
+        // Key-Value filter is not supported yet. So we replace it with exact match filter for now.
+      case UTF_KEY_VALUE_SEARCH:
+        rawFilters.addAll(keyTokens.stream().map(UTF8ExactMatchFilter::new).collect(Collectors.toList()));
         rawFilters.addAll(valueTokens.stream().map(UTF8ExactMatchFilter::new).collect(Collectors.toList()));
         break;
-      //      case UTF_KEY_VALUE_SEARCH:
-      //        rawFilters.addAll(valueTokens.stream().map(UTF8KeyValueMatchFilter::new).collect(Collectors.toList()));
       default:
         throw new RuntimeException(rawFilterSupport + " is not implemented yet");
       }
