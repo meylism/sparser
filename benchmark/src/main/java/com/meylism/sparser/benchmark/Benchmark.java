@@ -12,10 +12,11 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.concurrent.TimeUnit;
 
 @OutputTimeUnit(value = TimeUnit.SECONDS)
-@Warmup(iterations = 2, time = 3)
+@Warmup(iterations = 2, time = 2)
+@Measurement(iterations = 2, time = 5)
 @BenchmarkMode(value = Mode.AverageTime)
 @Fork(value = 1)
-@Measurement(iterations = 2, time = 3)
+@State(Scope.Benchmark)
 public class Benchmark {
 
   @org.openjdk.jmh.annotations.Benchmark

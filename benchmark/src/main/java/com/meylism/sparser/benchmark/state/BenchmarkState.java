@@ -9,8 +9,6 @@ import lombok.Getter;
 import org.openjdk.jmh.annotations.*;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
 
 /**
@@ -41,11 +39,6 @@ public class BenchmarkState {
 
     File file = new File(dataset);
     this.reader = query.getReader(file);
-  }
-
-  @TearDown
-  public void finish() {
-
   }
 
   private QueryDescription getQueryByName(String name) {

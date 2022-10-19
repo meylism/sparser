@@ -133,10 +133,10 @@ public class CostBasedOptimizer extends Optimizer {
    * data-dependent parameters and is used while choosing the best cascade.
    */
   private static class FilterOptimizationContext {
+//   Average time taken to execute a filter.
     @Getter @Setter private long avgRuntime;
-    /**
-     * The ith bit tells whether the ith record passed this filter or not.
-     */
+//  Bitmask that is used to calculate the false positive rate of a filter.
+//  The ith bit tells whether the ith record passed this filter or not.
     @Getter @Setter private BitSet passthroughMask;
 
     public void initPassthroughMask(int size) {

@@ -29,7 +29,9 @@ There are two key observations that reinforce the idea of filtering:
 ## Filter Primitives
 
 Filtering primitives are [filter operators](./core/src/main/java/com/meylism/sparser/core/operator/FilterOperator.java) 
-that Sparser uses to decide whether to filter data or not.
+that are [derived](./core/src/main/java/com/meylism/sparser/core/operator/compiler/RawFilterCompiler.java) 
+from the given [predicate](./core/src/main/java/com/meylism/sparser/core/predicate/Predicate.java) 
+and Sparser uses them to decide whether to filter data or not.
 
 ### Supported Filter Primitives
 
@@ -59,12 +61,12 @@ makes sure that the value being looked up belongs to the key.
 There are two key challenges in designing filtering primitives:
 1. Filters should be hardware-efficient. Certain families of string search algorithms perform better under certain 
    conditions. Therefore, size of substring or any other factor that affects search time should be taken into 
-   account while [compiling substrings](./core/src/main/java/com/meylism/sparser/core/operator/compiler/RawFilterCompiler.java). 
+   account while deriving filter operators from Sparser predicates.
    For example, the SIMD-based algorithm that authors suggested is optimized for 2-, 4-, and 8-byte substring look-ups.
 2. Choosing an efficient filter [cascade](./core/src/main/java/com/meylism/sparser/core/filter/Cascade.java). To 
    decrease the overall false positive rate, a set of filtering primitives are combined into a cascade. In this case, 
    all substrings inside cascade are looked-up for existence before being 
-   able to discard a record. The problem is two-fold: (1) Sparser should choose the most optimal cascade and (2) it
+   able to discard a record. The problem here is two-fold: (1) Sparser should choose the most optimal cascade and (2) it
    should do it fast since the search space for choosing the best cascade is combinatorial.
 
 Sparser's solutions for the challenges above:
@@ -84,6 +86,11 @@ Limitations on predicate support:
 
 ## How to Use?
 
+Using Sparser basically includes taking a predicate and converting the underlying logic to Sparser's primitives. Here we
+present a few cases where Sparser can & cannot be used
+
+1. SQL query: ``
+
 ## Benchmarks
 
 ### More on Performance
@@ -101,4 +108,7 @@ Link to the partial implementation of Sparser by its authors: [Sparser on GitHub
 TODO:
 
 - [ ] implement isDNF
+- [ ] change the implementation of subssearch
 - [ ] re-optimization strategy
+- [ ] raw filtering
+- 

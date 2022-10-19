@@ -3,6 +3,7 @@ package com.meylism.sparser.core;
 import com.google.common.base.Preconditions;
 import com.meylism.sparser.core.deserializer.Deserializer;
 import com.meylism.sparser.core.filter.Filter;
+import com.meylism.sparser.core.operator.compiler.ExperimentalRawFilterCompiler;
 import com.meylism.sparser.core.operator.compiler.RawFilterCompiler;
 import com.meylism.sparser.core.operator.compiler.JavaOptimizedRawFilterCompiler;
 import com.meylism.sparser.core.optimization.CostBasedOptimizer;
@@ -58,7 +59,8 @@ public class Sparser {
    */
   private void compile() {
     //    if (!PredicateUtils.isInDnf(predicate)) throw new RuntimeException("The query doesn't seem to be in DNF");
-    RawFilterCompiler filterCompiler = new JavaOptimizedRawFilterCompiler(this.configuration);
+//    RawFilterCompiler filterCompiler = new JavaOptimizedRawFilterCompiler(this.configuration);
+    RawFilterCompiler filterCompiler = new ExperimentalRawFilterCompiler(this.configuration);
     filterCompiler.compile(predicate);
   }
 
