@@ -15,7 +15,8 @@ public abstract class DefaultJsonQueryDescription implements QueryDescription {
   }
 
   @Override public Reader getReader(File file) {
-    return new JsonReader(file);
+//    return new JsonReader(file);
+    return null;
   }
 
   @Override public Deserializer getDeserializer() {

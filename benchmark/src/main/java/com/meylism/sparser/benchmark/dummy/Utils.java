@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Utils {
-
   public static ArrayList<String> loadJson(final String path) throws IOException {
     File file = new File(path);
     Scanner scanner;

@@ -21,8 +21,9 @@ public class BenchmarkState {
   @Getter private Reader reader;
   @Getter private Sparser sparser;
   @Getter private Deserializer deserializer;
+  @Getter private File file;
 
-  // jmh will inject queries automatically
+  // jmh will inject params automatically
   @Param({})
   @Getter private String query;
 
@@ -37,7 +38,7 @@ public class BenchmarkState {
     this.deserializer = query.getDeserializer();
     this.sparser = new Sparser(query.getQuery(), query.getFileFormat(), deserializer);
 
-    File file = new File(dataset);
+    file = new File(dataset);
     this.reader = query.getReader(file);
   }
 

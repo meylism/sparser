@@ -17,7 +17,7 @@
 
     <properties>
         <jmh.version>1.35</jmh.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
     </properties>
 
    <dependencies>
@@ -58,6 +58,11 @@
            <groupId>com.fasterxml.jackson.core</groupId>
            <artifactId>jackson-databind</artifactId>
            <version>${jackson.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <scope>test</scope>
        </dependency>
    </dependencies>
 

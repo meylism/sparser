@@ -7,6 +7,8 @@ import com.meylism.sparser.core.predicate.Predicate;
 import java.io.File;
 
 public interface QueryDescription {
+  // Queries are identified by their names and are therefore expected to be unique across the project.
+  // You will get warned if queries share a name together.
   String getName();
 
   String getQueryDescription();

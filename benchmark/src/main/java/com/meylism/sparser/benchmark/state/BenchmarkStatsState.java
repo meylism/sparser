@@ -15,7 +15,7 @@ public class BenchmarkStatsState {
   @TearDown
   public void publishStats() {
     System.out.println("\n ------------ STATISTICS ------------ \n");
-    System.out.println("Selectivity: ");
-    System.out.print((float) (recordsSoFar-filteredRecords)/(float) recordsSoFar);
+    System.out.println("Total: " + recordsSoFar);
+    System.out.println("Filtered: " + filteredRecords);
   }
 }
