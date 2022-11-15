@@ -4,6 +4,7 @@ import com.meylism.sparser.core.Configuration;
 import com.meylism.sparser.core.FileFormat;
 import com.meylism.sparser.core.operator.FilterOperator;
 import com.meylism.sparser.core.operator.utf.UTF8ExactMatchFilter;
+import com.meylism.sparser.core.operator.utf.UTF8KeyValueMatchFilter;
 import com.meylism.sparser.core.predicate.Predicate;
 import com.meylism.sparser.core.predicate.SimplePredicate;
 import com.meylism.sparser.core.support.PredicateSupport;
@@ -55,10 +56,12 @@ public class ExperimentalRawFilterCompiler extends RawFilterCompiler {
     for (RawFilterSupport rawFilterSupport : rawFilterSupportList) {
       switch (rawFilterSupport) {
       case UTF_SUBSTRING_SEARCH:
-        // Key-Value filter is not supported yet. So we replace it with exact match filter for now.
-      case UTF_KEY_VALUE_SEARCH:
         rawFilters.addAll(keyTokens.stream().map(UTF8ExactMatchFilter::new).collect(Collectors.toList()));
         rawFilters.addAll(valueTokens.stream().map(UTF8ExactMatchFilter::new).collect(Collectors.toList()));
+        break;
+        // Key-Value filter is not supported yet. So we replace it with exact match filter for now.
+      case UTF_KEY_VALUE_SEARCH:
+        rawFilters.add(new UTF8KeyValueMatchFilter(keyTokens.get(0), valueTokens.get(0), null));
         break;
       default:
         throw new RuntimeException(rawFilterSupport + " is not implemented yet");

@@ -9,13 +9,16 @@ public class Configuration {
   /**
    * The size of to-be generated tokens for RFs.
    */
-  public static final Integer SUBSTRING_SIZE = 4;
+  public static final Integer SUBSTRING_SIZE = 7;
 
-  // calibration
+  // optimization
   /**
-   * The maximum and minimum number of RFs to consider.
+   * The maximum number of RFs to consider.
    */
   public static final Integer MAX_RF = 32;
+  /**
+   * The minimum number of RFs to consider.
+   */
   public static final Integer MIN_RF = 4;
   /**
    * The maximum number of records to sample.

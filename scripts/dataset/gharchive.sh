@@ -1,17 +1,23 @@
-#!/usr/bin/env bash
 # A script to fetch data from Github Archive
+PREFIX=$HOME/sparser-data/data-gharchive
+aggregated=mm2gharchive.json
 
-year=2013
-month=07
-day=07
+# initial clean-up
+if [ -e "$PREFIX"/$aggregated ]; then
+  rm "$PREFIX"/$aggregated
+fi
+if [ -e "$PREFIX"/temp ]; then
+  rm -rf "$PREFIX"/temp
+fi
 
-# fetch all github action happened on 07.07.2013
+year=2019
+month=05
+day=28
 # omit --day to fetch the whole month
-python3 ./py/gharchive.py --year $year --month $month --day $day --directory $HOME/Downloads/data-gharchive/
+python3 ./py/gharchive.py --year $year --month $month --day $day --directory "$PREFIX"/temp
 
 # aggregate into a single file
-aggregated=gharchive.json
-cat $HOME/Downloads/data-gharchive/*.json >> $HOME/Downloads/data-gharchive/$aggregated
+sed -r "" "$HOME"/sparser-data/data-gharchive/temp/*.json >> "$PREFIX"/$aggregated
 
 # delete stuff
-rm $HOME/Downloads/data-gharchive/$year*.json
+rm -rf "$PREFIX"/temp
