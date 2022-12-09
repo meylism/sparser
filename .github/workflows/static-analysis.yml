@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.JAVA_VERSION }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.JAVA_VERSION }}-m2
       - name: Build
-        run: mvn -B verify
+        run: mvn -B verify -P coverage
         # To run Sonar we're mandated to use JDK 11+. So we install newer version here, effectively overwriting
         # previously set JAVA_HOME.
       - name: Set up JDK 11 for Sonar
