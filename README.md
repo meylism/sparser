@@ -1,5 +1,18 @@
 # Sparser
 
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=coverage)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=bugs)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=meylism_sparser-port&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=meylism_sparser-port)
+
 <!-- TOC -->
 * [Sparser](#sparser)
   * [Filter Primitives](#filter-primitives)

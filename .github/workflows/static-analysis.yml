@@ -1,0 +1,47 @@
+name: static-analysis
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+env:
+  JAVA_VERSION: 8
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+jobs:
+  analyze:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-${{ env.JAVA_VERSION }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ env.JAVA_VERSION }}-m2
+      - name: Build
+        run: mvn -B verify
+        # To run Sonar we're mandated to use JDK 11+. So we install newer version here, effectively overwriting
+        # previously set JAVA_HOME.
+      - name: Set up JDK 11 for Sonar
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Analyze
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=meylism_sparser-port
