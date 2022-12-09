@@ -67,7 +67,7 @@ public class Driver {
       StringBuilder sb = new StringBuilder();
       sb.append("The following queries do not exist:\n");
       for (String notFoundQuery : notFound)
-        sb.append(notFoundQuery + '\n');
+        sb.append(notFoundQuery).append('\n');
       throw new RuntimeException(sb.toString());
     }
   }

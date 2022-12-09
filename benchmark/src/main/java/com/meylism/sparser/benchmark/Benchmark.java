@@ -22,55 +22,55 @@ import java.util.concurrent.TimeUnit;
 @Fork(value = 1)
 @State(Scope.Benchmark)
 public class Benchmark {
-  @org.openjdk.jmh.annotations.Benchmark
-  public void baseline(BenchmarkState state, Blackhole blackhole) throws Exception {
-    BufferedReader scanner = new BufferedReader(new FileReader(state.getFile()));
-    String s = scanner.readLine();
-    while (s != null) {
-//      try {
-        blackhole.consume(state.getDeserializer().deserialize(s));
-        s = scanner.readLine();
-//      } catch (Exception e) {
-//        continue;
-//      }
-    }
-  }
-
-  @org.openjdk.jmh.annotations.Benchmark
-  public void read(BenchmarkState state, Blackhole blackhole) throws Exception {
-    BufferedReader scanner = new BufferedReader(new FileReader(state.getFile()));
-    String s = scanner.readLine();
-    while (s != null) {
-        blackhole.consume(s);
-        s = scanner.readLine();
-    }
-    //    for (String record : state.getReader().read()) {
-    //      blackhole.consume(state.getDeserializer().deserialize(record));
-    //    }
-
-  }
-
 //  @org.openjdk.jmh.annotations.Benchmark
-//  public void sparser(BenchmarkState state, Blackhole blackhole) throws Exception {
-//    int filteredRecords = 0;
-//    int recordsSoFar = 0;
+//  public void baseline(BenchmarkState state, Blackhole blackhole) throws Exception {
 //    BufferedReader scanner = new BufferedReader(new FileReader(state.getFile()));
 //    String s = scanner.readLine();
 //    while (s != null) {
-//      if (state.getSparser().filter(s)) {
-//        filteredRecords++;
-//      } else {
+////      try {
 //        blackhole.consume(state.getDeserializer().deserialize(s));
-//      }
-//      recordsSoFar++;
-//      s = scanner.readLine();
+//        s = scanner.readLine();
+////      } catch (Exception e) {
+////        continue;
+////      }
 //    }
-//    System.out.println("\n ------------ STATISTICS ------------ \n");
-//    System.out.println("Total: " + recordsSoFar);
-//    System.out.println("Filtered: " + filteredRecords);
-//    float selectivity = (float) (recordsSoFar-filteredRecords)/(float)recordsSoFar;
-//    System.out.println("Selectivity: " +  selectivity);
 //  }
+//
+//  @org.openjdk.jmh.annotations.Benchmark
+//  public void read(BenchmarkState state, Blackhole blackhole) throws Exception {
+//    BufferedReader scanner = new BufferedReader(new FileReader(state.getFile()));
+//    String s = scanner.readLine();
+//    while (s != null) {
+//        blackhole.consume(s);
+//        s = scanner.readLine();
+//    }
+//    //    for (String record : state.getReader().read()) {
+//    //      blackhole.consume(state.getDeserializer().deserialize(record));
+//    //    }
+//
+//  }
+
+  @org.openjdk.jmh.annotations.Benchmark
+  public void sparser(BenchmarkState state, Blackhole blackhole) throws Exception {
+    int filteredRecords = 0;
+    int recordsSoFar = 0;
+    BufferedReader scanner = new BufferedReader(new FileReader(state.getFile()));
+    String s = scanner.readLine();
+    while (s != null) {
+      if (state.getSparser().filter(s)) {
+        filteredRecords++;
+      } else {
+        blackhole.consume(state.getDeserializer().deserialize(s));
+      }
+      recordsSoFar++;
+      s = scanner.readLine();
+    }
+    System.out.println("\n ------------ STATISTICS ------------ \n");
+    System.out.println("Total: " + recordsSoFar);
+    System.out.println("Filtered: " + filteredRecords);
+    float selectivity = (float) (recordsSoFar-filteredRecords)/(float)recordsSoFar;
+    System.out.println("Selectivity: " +  selectivity);
+  }
 
   public void bench(String[] queries, String dataset) throws RunnerException {
       Options options = new OptionsBuilder()
