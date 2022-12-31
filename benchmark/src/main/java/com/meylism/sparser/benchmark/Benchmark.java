@@ -65,8 +65,15 @@ public class Benchmark {
     System.out.println("\n ------------ STATISTICS ------------ \n");
     System.out.println("Total: " + recordsSoFar);
     System.out.println("Filtered: " + filteredRecords);
-    float selectivity = (float) (recordsSoFar-filteredRecords)/(float)recordsSoFar;
-    System.out.println("Selectivity: " +  selectivity);
+
+    float selectivity;
+    if (recordsSoFar == 0) {
+      System.out.println("Stopping benchmarks: dataset contains no records");
+      System.exit(-1);
+    } else {
+      selectivity = (float) (recordsSoFar-filteredRecords)/(float)recordsSoFar;
+      System.out.println("Selectivity: " +  selectivity);
+    }
   }
 
   public void bench(String[] queries, String dataset) throws RunnerException {
