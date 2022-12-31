@@ -14,6 +14,7 @@
         <module>benchmark</module>
         <module>core</module>
         <module>jacoco-report</module>
+<!--        <module>xprmntl-bnchmrks</module>-->
     </modules>
 
     <properties>

@@ -1,7 +1,6 @@
 package com.meylism.sparser.benchmark.json;
 
 import com.meylism.sparser.benchmark.QueryDescription;
-import com.meylism.sparser.benchmark.Reader;
 import com.meylism.sparser.core.FileFormat;
 import com.meylism.sparser.core.deserializer.Deserializer;
 
@@ -12,11 +11,6 @@ public abstract class DefaultJsonQueryDescription implements QueryDescription {
 
   @Override public FileFormat getFileFormat() {
     return FileFormat.JSON;
-  }
-
-  @Override public Reader getReader(File file) {
-//    return new JsonReader(file);
-    return null;
   }
 
   @Override public Deserializer getDeserializer() {

@@ -5,6 +5,7 @@ import com.meylism.sparser.core.deserializer.Deserializer;
 import com.meylism.sparser.core.predicate.Predicate;
 
 import java.io.File;
+import java.io.Reader;
 
 public interface QueryDescription {
   // Queries are identified by their names and are therefore expected to be unique across the project.
@@ -17,7 +18,6 @@ public interface QueryDescription {
 
   FileFormat getFileFormat();
 
-  Reader getReader(File file);
 
   Deserializer getDeserializer();
 }

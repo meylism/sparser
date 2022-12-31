@@ -77,7 +77,7 @@ As an example, here I try to get the selectivity of the given query:
 
 ```java
 // An object instantiated from this class is injected into each benchmark method.
-@State(Scope.Benchmark)
+@State(Scope.com.meylism.sparser.experimental.Benchmark)
 public class BenchmarkStatsState {
   public int recordsSoFar;
   public int filteredRecords;
@@ -92,7 +92,7 @@ public class BenchmarkStatsState {
 ```
 
 ```java
-@Benchmark
+@com.meylism.sparser.experimental.Benchmark
   public void sparser(BenchmarkState state, BenchmarkStatsState statsState, Blackhole blackhole) throws Exception {
     for (String record : state.getReader().read()) {
       if (state.getSparser().filter(record)) {
